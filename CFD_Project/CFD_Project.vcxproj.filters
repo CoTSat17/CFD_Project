@@ -27,6 +27,12 @@
     <ClCompile Include="Source\element.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\faces.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\interface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\node.h">
@@ -36,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\element.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\faces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
