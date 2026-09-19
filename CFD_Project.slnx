@@ -3,6 +3,6 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="CFD_Project/CFD_Project.vcxproj" />
-  <Project Path="G_TESTS/G_TESTS.vcxproj" />
+  <Project Path="CFD_Project/CFD_Project.vcxproj" Id="ce3cd143-ec6a-40a4-986b-ce26febd3a2f" />
+  <Project Path="G_TESTS/G_TESTS.vcxproj" Id="7d664b57-0bbb-4278-8853-c7454a2749cf" />
 </Solution>
