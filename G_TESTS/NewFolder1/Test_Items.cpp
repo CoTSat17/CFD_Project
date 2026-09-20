@@ -128,6 +128,7 @@ TEST(Nodes_Test, Nodes_Creation) {
 
 
 
+
 TEST(Element_Test, Element_Struct) {
 	int n_nodes = 3;
 	float test_value = 4.5;
@@ -135,7 +136,7 @@ TEST(Element_Test, Element_Struct) {
 
 	Node** nodes= (Node**)malloc(sizeof(Node*) * n_nodes);
 
-
+	
 	Node* node_1 = node_create(1, 2, 3, 0);
 	Node* node_2 = node_create(1, 2, 3, 1);
 	Node* node_3 = node_create(1, 2, 3, 2);
@@ -143,12 +144,15 @@ TEST(Element_Test, Element_Struct) {
 	nodes[1] = node_2;
 	nodes[2] = node_3;
 
-	Element element = { nodes, test_value, n_nodes, id };
+	Element_Type element_type = element_type_data[ELEMENT_TRI];
+
+	Element element = { nodes, test_value, &element_type, id };
 
 	for (int i = 0; i < n_nodes; i++) {
 		EXPECT_EQ(element.nodes[i]->id, i);
 	}
-	EXPECT_EQ(element.n_nodes, n_nodes);
+	EXPECT_EQ(element.element_type->n_nodes, n_nodes);
+	EXPECT_EQ(element.element_type->n_faces, 3);
 	EXPECT_EQ(element.test_value, test_value);
 	EXPECT_EQ(element.id, id);
 
@@ -158,6 +162,8 @@ TEST(Element_Test, Element_Struct) {
 	node_destroy(node_3);
 	free(nodes);
 }
+
+
 
 TEST(Element_Test, Element_Create) {
 	int n_nodes = 3;
@@ -172,13 +178,15 @@ TEST(Element_Test, Element_Create) {
 	nodes[1] = node_2;
 	nodes[2] = node_3;
 
-	Element* element = element_create(nodes, n_nodes, id);
+	Element* element = element_create(nodes, ELEMENT_TRI, id);
 
 
 	for (int i = 0; i < n_nodes; i++) {
 		EXPECT_EQ(element->nodes[i]->id, i);
 	}
-	EXPECT_EQ(element->n_nodes, n_nodes);
+
+	EXPECT_EQ(element->element_type->n_nodes, n_nodes);
+	EXPECT_EQ(element->element_type->n_faces, 3);
 	EXPECT_EQ(element->test_value, 0);
 	EXPECT_EQ(element->id, id);
 
@@ -210,8 +218,8 @@ TEST(Element_Test, Element_Dist) {
 	nodes_2[1] = node_2;
 	nodes_2[2] = node_4;
 
-	Element* element_1 = element_create(nodes_1, n_nodes, id);
-	Element* element_2 = element_create(nodes_2, n_nodes, id);
+	Element* element_1 = element_create(nodes_1, ELEMENT_TRI, id);
+	Element* element_2 = element_create(nodes_2, ELEMENT_TRI, id);
 
 	float dist = element_dist(element_1, element_2);
 	
@@ -235,7 +243,7 @@ TEST(Element_Test, Element_Center) {
 	nodes[1] = node_2;
 	nodes[2] = node_3;
 
-	Element* element = element_create(nodes, n_nodes, id);
+	Element* element = element_create(nodes, ELEMENT_TRI, id);
 
 	Point center = element_center(element);
 
@@ -264,7 +272,7 @@ TEST(Elements_Test, Elements_Create) {
 
 	Nodes* nodes = nodes_create(positions, 12);
 
-	Elements* elements = elements_create(element_index, 6, 3, nodes);
+	Elements* elements = elements_create(element_index, 6, ELEMENT_TRI, nodes);
 
 
 	// Test size

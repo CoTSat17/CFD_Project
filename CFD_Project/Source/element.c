@@ -1,16 +1,16 @@
 #include <element.h>
 
 
-Element* element_create(Node** nodes, int n_nodes, int id) {
+Element* element_create(Node** nodes, Element_Types_Avialable element_type, int id) {
 	// Allocate a single block for Element and its node pointers to reduce
 	// number of allocations and improve cache locality.
-	Element* element = (Element*)malloc(sizeof(Element) + n_nodes * sizeof(Node*));
+	Element* element = (Element*)malloc(sizeof(Element) + element_type_data[element_type].n_nodes * sizeof(Node*));
 	if (!element) return NULL;
 
-	element->n_nodes = n_nodes;
+	element->element_type = &element_type_data[element_type];
 	// nodes array is placed immediately after the Element struct
 	element->nodes = (Node**)(element + 1);
-	for (int i = 0; i < n_nodes; i++) {
+	for (int i = 0; i < element->element_type->n_nodes; i++) {
 		element->nodes[i] = nodes[i];
 	}
 
@@ -48,14 +48,14 @@ Point element_center(Element* element_1) {
 	center_position.z = 0.;
 
 
-	for (int i = 0; i < element_1->n_nodes; i++) {
+	for (int i = 0; i < element_1->element_type->n_nodes; i++) {
 		center_position.x += element_1->nodes[i]->position.x;
 		center_position.y += element_1->nodes[i]->position.y;
 		center_position.z += element_1->nodes[i]->position.z;
 	}
 
-	if (element_1->n_nodes > 0) {
-		float inv = 1.0f / (float)element_1->n_nodes;
+	if (element_1->element_type->n_nodes > 0) {
+		float inv = 1.0f / (float)element_1->element_type->n_nodes;
 		center_position.x *= inv;
 		center_position.y *= inv;
 		center_position.z *= inv;
@@ -67,9 +67,11 @@ Point element_center(Element* element_1) {
 
 
 
-Elements* elements_create(int* nodes_index, int size_array, int element_size, Nodes* nodes_list) {
+Elements* elements_create(int* nodes_index, int size_array, Element_Types_Avialable element_type, Nodes* nodes_list) {
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
 	if (elements == NULL) return NULL;
+
+	int element_size = element_type_data[element_type].n_nodes;
 
 	// --------------
 	// Set N_elements
@@ -96,7 +98,7 @@ Elements* elements_create(int* nodes_index, int size_array, int element_size, No
 		for (int j = 0; j < element_size; j++) {
 			element_nodes[j] = nodes_search_id(nodes_list, nodes_index[i * element_size + j]);
 		}
-		Element* element = element_create(element_nodes, element_size, i + 1);
+		Element* element = element_create(element_nodes, element_type, i + 1);
 
 
 		// Asign the new element to the elements array
@@ -105,3 +107,25 @@ Elements* elements_create(int* nodes_index, int size_array, int element_size, No
 
 	return elements;
 }
+
+
+
+
+
+
+Element_Type element_type_data[N_ELEMENTS] = {
+	[ELEMENT_TRI] = {.n_nodes = 3,
+						.n_faces = 3,
+						.face_nodes = { {0,1}, {1,2}, {2,0} }
+					},
+
+	[ELEMENT_TETRA] = {.n_nodes = 4,
+						.n_faces = 4,
+						.face_nodes = { {0,1}, {1,2}, {2,3}, {3,0} }
+					},
+
+	[ELEMENT_HEXA] = {.n_nodes = 8,
+						.n_faces = 6,
+						.face_nodes = { {0,1,2,3}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7} }
+					},
+};
