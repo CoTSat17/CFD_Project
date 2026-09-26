@@ -1,4 +1,5 @@
 #pragma once
+#include <stdlib.h>
 #include <element.h>
 
 
@@ -6,10 +7,9 @@
 /// Face of a element of the mesh
 /// </summary>
 typedef struct Face {
-	int* nodes_id;		///< Array of the id of the nodes that form the face
+	int* nodes_id;		///< Pointer to array of ids that form the face
 	Element* element;	///< Element that has that face
 }Face;
-
 
 
 
@@ -18,9 +18,21 @@ typedef struct Face {
 /// Group of the faces that form the mesh
 /// </summary>
 typedef struct Faces{
-	Face* faces;
-	int n_faces;
+	Face* face_array;
+	int n_faces;	 // Number of faces stored
+	int* nodes_pool; // Pointer to where all the faces store the nodes_id
+	Face* new_face;  // Pointer to where a new "Face" struct must be added
+	int* new_nodes;  // Pointer to where a new node_ids must be added
 }Faces;
+
+/// <summary>
+/// Creates a list with tha faces of the given element
+/// <para> _ </para>
+/// <para> All memory for the "faces", "face" and "node_ids" is allocated in a single block </para>
+/// </summary>
+/// <param name="element">Element where the faces must be extracted</param>
+/// <returns>Pointer to a "Faces" struct that contains an array with the faces</returns>
+Faces* create_element_faces(Element* element);
 
 
 
@@ -28,7 +40,5 @@ typedef struct Faces{
 /// Creates a list of the faces that form the mesh
 /// <para> The "nodes" must be ordered anticlockwise </para>
 /// </summary>
-/// <param name="nodes_index">Array of the elements that form the mesh. 
-///				The nodes must be ordered anticlockwise</param>
-/// <param name="n_elements">Number of elements in the "elements" array</param>
-Faces* create_faces(Elements* elements, int n_elements);
+/// <param name="elemetns">Pointer to an array of pointers to the faces </param>
+Faces* create_faces(Elements* elements);
