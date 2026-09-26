@@ -12,6 +12,14 @@ typedef struct Face {
 }Face;
 
 
+/// <summary>
+/// Checks if two diferent face structs define the same face
+/// </summary>
+/// <param name="face_1">First face to compare</param>
+/// <param name="face_2">Second face to compare</param>
+/// <returns>1 if equal // 0 if different</returns>
+int faces_equal(Face* face_1, Face* face_2);
+
 
 
 /// <summary>
@@ -53,4 +61,5 @@ Faces* faces_create_from_elements(Elements* elements);
 /// </summary>
 /// <param name="faces">Faces struct to sort</param>
 void faces_sort(Faces* faces);
+
 

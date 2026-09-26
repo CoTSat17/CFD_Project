@@ -5,6 +5,16 @@ int sort_descending_faces_nodes(const void* a, const void* b);
 
 
 
+int faces_equal(Face* face_1, Face* face_2) {
+	for (int i = 0; i < face_1->element->element_type->node_per_face; i++) {
+		if (face_1->nodes_id[i] != face_2->nodes_id[i]) return 0;
+	}
+
+	return 1;
+}
+
+
+
 
 
 Faces* faces_create_from_element(Element* element) {
@@ -132,7 +142,6 @@ void faces_sort(Faces* faces) {
 	
 	qsort(faces->face_array, faces->n_faces, sizeof(Face), sort_descending_faces_nodes);
 
-	
 }
 
 int sort_descending_faces_nodes(const void* a, const void* b) {

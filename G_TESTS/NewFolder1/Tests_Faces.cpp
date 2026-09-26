@@ -111,3 +111,28 @@ TEST(Face_Test, Faces_Sort) {
 	EXPECT_EQ(faces->face_array[5].nodes_id[0], 2);
 	EXPECT_EQ(faces->face_array[5].nodes_id[1], 1);
 }
+
+
+
+
+TEST(Face_Test, Face_Equal) {
+	float nodes_position[] = { 0.0,	0.0,	0.0,
+								1.0,	0.0,	0.0,
+								0.0,	1.0,	0.0,
+								1.0,	1.0,	0.0 };
+
+	int node_inex[] = { 1,	2,	3,
+						2,	3,	4 };
+
+	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
+	Elements* elements = elements_create(node_inex, sizeof(node_inex) / sizeof(node_inex[0]), ELEMENT_TRI, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+	faces_sort(faces);
+
+	int faces_equal_1 = faces_equal(&faces->face_array[2], &faces->face_array[3]);
+	EXPECT_EQ(faces_equal_1, 1);
+	int faces_equal_2 = faces_equal(&faces->face_array[0], &faces->face_array[3]);
+	EXPECT_EQ(faces_equal_2, 0);
+}
