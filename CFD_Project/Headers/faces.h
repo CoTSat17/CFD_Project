@@ -32,7 +32,7 @@ typedef struct Faces{
 /// </summary>
 /// <param name="element">Element where the faces must be extracted</param>
 /// <returns>Pointer to a "Faces" struct that contains an array with the faces</returns>
-Faces* create_element_faces(Element* element);
+Faces* faces_create_from_element(Element* element);
 
 
 
@@ -41,4 +41,16 @@ Faces* create_element_faces(Element* element);
 /// <para> The "nodes" must be ordered anticlockwise </para>
 /// </summary>
 /// <param name="elemetns">Pointer to an array of pointers to the faces </param>
-Faces* create_faces(Elements* elements);
+Faces* faces_create_from_elements(Elements* elements);
+
+
+
+
+
+/// <summary>
+/// Given a "Faces" struct it sorts the faces by descending order of its nodes
+/// <para> Only the array of "Face" structs is ordered, the pool of node ids remains constant.
+/// </summary>
+/// <param name="faces">Faces struct to sort</param>
+void faces_sort(Faces* faces);
+

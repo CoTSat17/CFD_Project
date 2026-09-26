@@ -1,33 +1,13 @@
 #include <faces.h>
 
 int compare_descending(const void* a, const void* b);
-
-
-
-//
-//Faces* create_faces(Elements* elements) {
-//	/// ----------------------------------------------------------------------------
-//	/// Allocate memory for the "faces" struct and the array of "face" structs
-//	/// ----------------------------------------------------------------------------
-//	/// The elements must be the same type.
-//	Faces* faces = (Faces*)malloc(sizeof(Faces) + elements->elements[0]->element_type->n_faces * elements->n_elements * sizeof(Face*));
-//	Face* next_face_pointer = faces + sizeof(Faces*);
-//
-//
-//	/// ----------------------------------------------------------------
-//	/// CREATE A ARRAY OF "FACE" STRUCTS WITH THE FACES OF EACH ELEMENT
-//	/// ----------------------------------------------------------------
-//	/// The nodes that form each face are sorted from smallest to biggest
-//	
-//	/// Iterate through each element
-//	for (int i = 0; i < elements->n_elements; i++) {
-//	}
-//}
+int sort_descending_faces_nodes(const void* a, const void* b);
 
 
 
 
-Faces* create_element_faces(Element* element) {
+
+Faces* faces_create_from_element(Element* element) {
 	/// -----------------
 	/// ALLOCATES MEMORY 
 	/// -----------------
@@ -73,7 +53,7 @@ Faces* create_element_faces(Element* element) {
 
 
 
-Faces* create_faces(Elements* elements) {
+Faces* faces_create_from_elements(Elements* elements) {
 	// ------------------------ 
 	// DETERMINE SIZE OF MEMORY
 	// ------------------------ 
@@ -142,4 +122,28 @@ Faces* create_faces(Elements* elements) {
 int compare_descending(const void* a, const void* b)
 {
 	return *(int*)b - *(int*)a;
+}
+
+
+
+
+
+void faces_sort(Faces* faces) {
+	
+	qsort(faces->face_array, faces->n_faces, sizeof(Face), sort_descending_faces_nodes);
+
+	
+}
+
+int sort_descending_faces_nodes(const void* a, const void* b) {
+	const Face* face_a = (const Face*)a;
+	const Face* face_b = (const Face*)b;
+
+	for (int i = 0; i < face_a->element->element_type->node_per_face; i++) {
+		if (face_a->nodes_id[i] > face_b->nodes_id[i]) return -1;
+		if (face_a->nodes_id[i] < face_b->nodes_id[i]) return  1;
+	}
+
+	return 0;
+
 }

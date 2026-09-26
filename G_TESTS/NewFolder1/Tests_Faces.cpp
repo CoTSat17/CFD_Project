@@ -7,7 +7,7 @@ extern "C" {
 }
 
 
-TEST(Face_Test, Create_Element_Faces) {
+TEST(Face_Test, Faces_Create_From_Element) {
 	float nodes_position[] = {	0.0,	0.0,	0.0,
 								1.0,	0.0,	0.0,
 								0.0,	1.0,	0.0};
@@ -17,7 +17,7 @@ TEST(Face_Test, Create_Element_Faces) {
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Element* element = element_create(nodes->nodes, ELEMENT_TRI, 1);
 
-	Faces* faces = create_element_faces(element);
+	Faces* faces = faces_create_from_element(element);
 
 
 	// Check number of faces
@@ -42,7 +42,7 @@ TEST(Face_Test, Create_Element_Faces) {
 
 
 
-TEST(Face_Test, Create_Faces) {
+TEST(Face_Test, Faces_Create_From_Elements) {
 	float nodes_position[] = {	0.0,	0.0,	0.0,
 								1.0,	0.0,	0.0,
 								0.0,	1.0,	0.0,
@@ -54,7 +54,7 @@ TEST(Face_Test, Create_Faces) {
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Elements* elements = elements_create(node_inex, sizeof(node_inex) / sizeof(node_inex[0]), ELEMENT_TRI, nodes);
 
-	Faces* faces = create_faces(elements);
+	Faces* faces = faces_create_from_elements(elements);
 
 	EXPECT_EQ(faces->n_faces, 6);
 	
@@ -77,4 +77,37 @@ TEST(Face_Test, Create_Faces) {
 	EXPECT_EQ(faces->face_array[5].element, elements->elements[1]);
 	EXPECT_EQ(faces->face_array[5].nodes_id[0], 4);
 	EXPECT_EQ(faces->face_array[5].nodes_id[1], 2);
+}
+
+
+
+
+TEST(Face_Test, Faces_Sort) {
+	float nodes_position[] = { 0.0,	0.0,	0.0,
+								1.0,	0.0,	0.0,
+								0.0,	1.0,	0.0,
+								1.0,	1.0,	0.0 };
+
+	int node_inex[] = { 1,	2,	3,
+						2,	3,	4 };
+
+	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
+	Elements* elements = elements_create(node_inex, sizeof(node_inex) / sizeof(node_inex[0]), ELEMENT_TRI, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+	faces_sort(faces);
+
+	EXPECT_EQ(faces->face_array[0].nodes_id[0], 4);
+	EXPECT_EQ(faces->face_array[0].nodes_id[1], 3);
+	EXPECT_EQ(faces->face_array[1].nodes_id[0], 4);
+	EXPECT_EQ(faces->face_array[1].nodes_id[1], 2);
+	EXPECT_EQ(faces->face_array[2].nodes_id[0], 3);
+	EXPECT_EQ(faces->face_array[2].nodes_id[1], 2);
+	EXPECT_EQ(faces->face_array[3].nodes_id[0], 3);
+	EXPECT_EQ(faces->face_array[3].nodes_id[1], 2);
+	EXPECT_EQ(faces->face_array[4].nodes_id[0], 3);
+	EXPECT_EQ(faces->face_array[4].nodes_id[1], 1);
+	EXPECT_EQ(faces->face_array[5].nodes_id[0], 2);
+	EXPECT_EQ(faces->face_array[5].nodes_id[1], 1);
 }
