@@ -144,12 +144,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\element.c" />
+    <ClCompile Include="Source\faces.c" />
+    <ClCompile Include="Source\interface.c" />
     <ClCompile Include="Source\main.c" />
     <ClCompile Include="Source\node.c" />
     <ClCompile Include="Source\point.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\element.h" />
+    <ClInclude Include="Headers\faces.h" />
+    <ClInclude Include="Headers\interface.h" />
     <ClInclude Include="Headers\node.h" />
     <ClInclude Include="Headers\point.h" />
   </ItemGroup>

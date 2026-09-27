@@ -116,16 +116,19 @@ Elements* elements_create(int* nodes_index, int size_array, Element_Types_Aviala
 Element_Type element_type_data[N_ELEMENTS] = {
 	[ELEMENT_TRI] = {.n_nodes = 3,
 						.n_faces = 3,
-						.face_nodes = { {0,1}, {1,2}, {2,0} }
+						.face_nodes =	 {	{0,1},	{1,2},	{2,0} },
+						.node_per_face = 2
 					},
 
 	[ELEMENT_TETRA] = {.n_nodes = 4,
 						.n_faces = 4,
-						.face_nodes = { {0,1}, {1,2}, {2,3}, {3,0} }
+						.face_nodes = {		{0,1},	{1,2},	{2,3},	{3,0} },
+						.node_per_face = 2
 					},
 
 	[ELEMENT_HEXA] = {.n_nodes = 8,
 						.n_faces = 6,
-						.face_nodes = { {0,1,2,3}, {4,5,6,7}, {0,1,5,4}, {1,2,6,5}, {2,3,7,6}, {3,0,4,7} }
+						.face_nodes = {		{0,1,2,3},	{4,5,6,7},	{0,1,5,4},	{1,2,6,5},	{2,3,7,6},	{3,0,4,7} },
+						.node_per_face = 4
 					},
 };

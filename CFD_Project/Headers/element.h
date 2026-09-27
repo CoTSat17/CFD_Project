@@ -24,6 +24,7 @@ typedef struct Element_Type {
 	int n_nodes;
 	int n_faces;
 	int face_nodes[MAX_FACES_PER_ELEM][MAX_NODES_PER_ELEM];
+	int node_per_face;
 }Element_Type;
 
 
