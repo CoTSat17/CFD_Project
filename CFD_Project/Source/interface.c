@@ -21,14 +21,18 @@ void interface_calculate_flux(Interface* interface) {
 }
 
 
+void interface_update_element_value(Interface* interface) {
+	interface->element_1->test_value -= 0.25 / (1 * 1) * (1 * (interface->flux));
+	interface->element_2->test_value += 0.25 / (1 * 1) * (1 * (interface->flux));
+}
 
 
-Intefaces* interfaces_create(Faces* faces) {
+Interfaces* interfaces_create(Faces* faces) {
 	// --------------------
 	// RESERVE MEMORY SPACE
 	// --------------------
 	// Initial memory reservation that overstates the ammount of memory needed.
-	Intefaces* interfaces = (Intefaces*)malloc(sizeof(Intefaces) + faces->n_faces * sizeof(Interface));
+	Interfaces* interfaces = (Interfaces*)malloc(sizeof(Interfaces) + faces->n_faces * sizeof(Interface));
 	if (interfaces == NULL) return NULL;
 
 
@@ -55,8 +59,28 @@ Intefaces* interfaces_create(Faces* faces) {
 	// -----------------
 	// ADJUST THE MEMORY 
 	// -----------------
-	Interface* interface_adjusted = realloc(interfaces, sizeof(Intefaces) + interfaces->n_interfaces * sizeof(Interface));
+	Interface* interface_adjusted = realloc(interfaces, sizeof(Interfaces) + interfaces->n_interfaces * sizeof(Interface));
 	if (interface_adjusted == NULL) return NULL;
 
 	return interface_adjusted;
+}
+
+
+
+
+
+void interfaces_calculate_flux(Interfaces* interfaces) {
+	for (int i = 0; i < interfaces->n_interfaces; i++) {
+		interface_calculate_flux(&interfaces->interface_array[i]);
+	}
+}
+
+
+
+
+
+void interfaces_update_element_value(Interfaces* interfaces) {
+	for (int i = 0; i < interfaces->n_interfaces; i++) {
+		interface_update_element_value(&interfaces->interface_array[i]);
+	}
 }

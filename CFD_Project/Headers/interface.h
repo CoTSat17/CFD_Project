@@ -36,6 +36,14 @@ void interface_create(Element* element_1, Element* element_2, Face* face, Interf
 void interface_calculate_flux(Interface* interface);
 
 
+/// <summary>
+/// Calculates the new value of the elements based from the flux of the interface
+/// <para>--</para>
+/// The first element of the interface is stablished as the one matching the normal of the interface
+/// </summary>
+/// <param name="interface">Interface that will be calculated</param>
+void interface_update_element_value(Interface* interface);
+
 
 
 /// <summary>
@@ -44,7 +52,7 @@ void interface_calculate_flux(Interface* interface);
 typedef struct Interfaces {
 	Interface* interface_array; // Array with all the element interfaces
 	int n_interfaces;			// Number of all the interfaces stored
-}Intefaces;	
+}Interfaces;	
 
 
 /// <summary>
@@ -52,4 +60,22 @@ typedef struct Interfaces {
 /// </summary>
 /// <param name="faces">Faces that form the interface</param>
 /// <returns>Pointer to the struct that stores the interfaces</returns>
-Intefaces* interfaces_create(Faces* faces);
+Interfaces* interfaces_create(Faces* faces);
+
+
+/// <summary>
+/// Calculates the flux for all the interfaces.
+/// <para>--</para>
+/// <para>The flux is calculates by "central diferencing"</para>
+/// </summary>
+/// <param name="interfaces">Interfaces array to be calculated</param>
+void interfaces_calculate_flux(Interfaces* interfaces);
+
+
+/// <summary>
+/// Calculates the new value of the elements based from the interfaces
+/// <para>--</para>
+/// The first element of the interface is stablished as the one matching the normal of the interface
+/// </summary>
+/// <param name="interfaces">Interfaces struct that will be calculated</param>
+void interfaces_update_element_value(Interfaces* interfaces);
