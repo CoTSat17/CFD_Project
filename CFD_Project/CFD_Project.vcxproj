@@ -154,6 +154,7 @@
     <ClInclude Include="Headers\element.h" />
     <ClInclude Include="Headers\faces.h" />
     <ClInclude Include="Headers\interface.h" />
+    <ClInclude Include="Headers\main.h" />
     <ClInclude Include="Headers\node.h" />
     <ClInclude Include="Headers\point.h" />
   </ItemGroup>
