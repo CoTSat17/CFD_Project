@@ -16,6 +16,34 @@ int faces_equal(Face* face_1, Face* face_2) {
 
 
 
+Point face_center(Face* face) {
+	Point center_point = { 0 , 0 , 0 };
+
+	// For each node find its position
+	for (int i = 0; i < face->element->element_type->node_per_face; i++) {
+
+		/// Find the point inside the element data
+		for (int j = 0; j < face->element->element_type->n_nodes; j++) {
+			if (face->element->nodes[j]->id == face->nodes_id[i]) {
+				Point position = face->element->nodes[j]->position;
+
+				center_point.x += position.x;
+				center_point.y += position.y;
+				center_point.z += position.z;
+			}
+		}
+
+	}
+
+	// Calculate the average
+	center_point.x = center_point.x / face->element->element_type->node_per_face;
+	center_point.y = center_point.y / face->element->element_type->node_per_face;
+	center_point.z = center_point.z / face->element->element_type->node_per_face;
+
+	return center_point;
+}
+
+
 
 Faces* faces_create_from_element(Element* element) {
 	/// -----------------

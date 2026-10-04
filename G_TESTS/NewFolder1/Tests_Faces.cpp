@@ -136,3 +136,33 @@ TEST(Face_Test, Face_Equal) {
 	int faces_equal_2 = faces_equal(&faces->face_array[0], &faces->face_array[3]);
 	EXPECT_EQ(faces_equal_2, 0);
 }
+
+
+
+
+
+TEST(Face_Test, Face_Center) {
+	float nodes_position[] = {	0.0,	0.0,	0.0,
+								1.0,	0.0,	0.0,
+								0.0,	2.0,	0.0,
+								1.0,	2.0,	0.0 };
+
+	int node_inex[] = { 1,	2,	4, 3};
+
+	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
+	Elements* elements = elements_create(node_inex, sizeof(node_inex) / sizeof(node_inex[0]), ELEMENT_TETRA, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+	Point face_center_position = face_center(&faces->face_array[0]);
+
+	EXPECT_EQ(face_center_position.x, 0.5);
+	EXPECT_EQ(face_center_position.y, 0.0);
+	EXPECT_EQ(face_center_position.z, 0.0);
+
+	face_center_position = face_center(&faces->face_array[1]);
+
+	EXPECT_EQ(face_center_position.x, 1.0);
+	EXPECT_EQ(face_center_position.y, 1.0);
+	EXPECT_EQ(face_center_position.z, 0.0);
+}

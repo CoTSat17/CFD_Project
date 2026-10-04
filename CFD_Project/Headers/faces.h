@@ -21,6 +21,13 @@ typedef struct Face {
 int faces_equal(Face* face_1, Face* face_2);
 
 
+/// <summary>
+/// Calculates the center point of the face
+/// </summary>
+/// <param name="face">Face struct where the center point will be calculated</param>
+/// <returns>Point: where the center is located</returns>
+Point face_center(Face* face);
+
 
 /// <summary>
 /// Group of the faces that form the mesh

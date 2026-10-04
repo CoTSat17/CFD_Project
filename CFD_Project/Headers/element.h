@@ -1,6 +1,7 @@
 #pragma once
 #include <node.h>
 
+typedef struct Face Face;
 
 
 typedef enum {
@@ -65,6 +66,14 @@ void element_destroy(Element* element);
 /// <param name="element_2">Second Element</param>
 /// <returns>Float: Distance between the centers</returns>
 float element_dist(Element* element_1, Element* element_2);
+
+/// <summary>
+/// Calculates distance between center of element and face
+/// </summary>
+/// <param name="element">element struct to be used</param>
+/// <param name="face">face struct to be used</param>
+/// <returns>Float: Distance</returns>
+float element_dist_to_face(Element* element, Face* face);
 
 
 /// <summary>

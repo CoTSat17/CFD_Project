@@ -1,5 +1,5 @@
 #include <element.h>
-
+#include <faces.h>
 
 Element* element_create(Node** nodes, Element_Types_Avialable element_type, int id) {
 	// Allocate a single block for Element and its node pointers to reduce
@@ -38,6 +38,18 @@ float element_dist(Element* element_1, Element* element_2) {
 
 	return distance;
 }
+
+
+float element_dist_to_face(Element* element, Face* face) {
+	Point element_center_point = element_center(element);
+	Point face_center_point = face_center(face);
+
+	// Calculate distance
+	float distance = point_dist(element_center_point, face_center_point);
+
+	return distance;
+}
+
 
 
 

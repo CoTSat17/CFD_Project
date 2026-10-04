@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 extern "C" {
 #include <element.h>
+#include <faces.h>
 }
 
 
@@ -149,7 +150,7 @@ TEST(Element_Test, Element_Center) {
 
 
 
-TEST(Elements_Test, Elements_Create) {
+TEST(Element_Test, Elements_Create) {
 	float positions[] = {	0.0,	0.0,	0.0,
 							1.0,	0.0,	0.0,
 							0.0,	1.0,	0.0,
@@ -170,6 +171,36 @@ TEST(Elements_Test, Elements_Create) {
 	// Test elements
 	EXPECT_EQ(elements->elements[0]->id, 1);
 	EXPECT_EQ(elements->elements[0]->nodes[1]->id, 2);
+
+
+}
+
+
+
+
+TEST(Element_Test, Element_dist_To_Face) {
+	float positions[] = {	0.0,	0.0,	0.0,
+							1.0,	0.0,	0.0,
+							0.0,	2.0,	0.0,
+							1.0,	2.0,	0.0 };
+
+	int element_index[] = { 1,	2,	4,	3};
+
+
+	Nodes* nodes = nodes_create(positions, 12);
+
+	Elements* elements = elements_create(element_index, 6, ELEMENT_TETRA, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+
+
+	float distance = element_dist_to_face(elements->elements[0], &faces->face_array[0]);
+	EXPECT_EQ(distance, 1.0);
+
+	distance = element_dist_to_face(elements->elements[0], &faces->face_array[1]);
+	EXPECT_EQ(distance, 0.5);
+
 
 
 }
