@@ -28,6 +28,13 @@ void boundary_calculate_flux(Boundary* boundary) {
 
 
 
+void boundary_update_element_value(Boundary* boundary) {
+	boundary->element->test_value += 0.25 / (1 * 1) * (1 * (boundary->flux));
+}
+
+
+
+
 
 Boundaries* boundaries_create(Faces* faces) {
 	// --------------------
@@ -85,5 +92,14 @@ Boundaries* boundaries_create(Faces* faces) {
 void boundaries_calculate_flux(Boundaries* boundaries) {
 	for (int i = 0; i < boundaries->n_boundaries; i++) {
 		boundary_calculate_flux(&boundaries->boundary_array[i]);		
+	}
+}
+
+
+
+
+void boundaries_update_element_value(Boundaries* boundaries) {
+	for (int i = 0; i < boundaries->n_boundaries; i++) {
+		boundary_update_element_value(&boundaries->boundary_array[i]);
 	}
 }

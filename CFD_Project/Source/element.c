@@ -132,7 +132,7 @@ Element_Type element_type_data[N_ELEMENTS] = {
 						.node_per_face = 2
 					},
 
-	[ELEMENT_TETRA] = {.n_nodes = 4,
+	[ELEMENT_QUAD] = {.n_nodes = 4,
 						.n_faces = 4,
 						.face_nodes = {		{0,1},	{1,2},	{2,3},	{3,0} },
 						.node_per_face = 2

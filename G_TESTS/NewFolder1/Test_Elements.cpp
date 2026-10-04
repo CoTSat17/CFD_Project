@@ -189,7 +189,7 @@ TEST(Element_Test, Element_dist_To_Face) {
 
 	Nodes* nodes = nodes_create(positions, 12);
 
-	Elements* elements = elements_create(element_index, 6, ELEMENT_TETRA, nodes);
+	Elements* elements = elements_create(element_index, 6, ELEMENT_QUAD, nodes);
 
 	Faces* faces = faces_create_from_elements(elements);
 

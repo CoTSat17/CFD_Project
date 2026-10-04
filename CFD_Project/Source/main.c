@@ -20,7 +20,7 @@ int main() {
 						};
 
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
-	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_TETRA, nodes);
+	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
 	faces_sort(faces);
 

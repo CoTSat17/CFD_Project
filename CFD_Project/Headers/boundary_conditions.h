@@ -43,6 +43,11 @@ void boundary_update(Boundary* boundary, Boundary_Type bc_type, float value);
 /// <param name="boundary">boundary where the flux will be calculated</param>
 void boundary_calculate_flux(Boundary* boundary);
 
+/// <summary>
+/// Calculates the new element value due to the effects of the BC
+/// </summary>
+/// <param name="boundary">Boundary to be implemented</param>
+void boundary_update_element_value(Boundary* boundary);
 
 
 typedef struct Boundaries {
@@ -65,3 +70,11 @@ Boundaries* boundaries_create(Faces* faces);
 /// </summary>
 /// <param name="boundaries"> Group of boundaries where the flux will be calculated</param>
 void boundaries_calculate_flux(Boundaries* boundaries);
+
+
+
+/// <summary>
+/// Calculates the new element value due to the effects of the BC
+/// </summary>
+/// <param name="boundary">Group of boundary to be implemented</param>
+void boundaries_update_element_value(Boundaries* boundaries);

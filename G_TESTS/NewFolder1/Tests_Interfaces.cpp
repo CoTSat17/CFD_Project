@@ -19,7 +19,7 @@ TEST(Interface_Test, Interfaces_Create) {
 						 2,	5,	6,	4 };
 
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
-	Elements* elements = elements_create(node_index, sizeof(node_index)/ sizeof(node_index[0]), ELEMENT_TETRA, nodes);
+	Elements* elements = elements_create(node_index, sizeof(node_index)/ sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
 	faces_sort(faces);
 
@@ -51,7 +51,7 @@ TEST(Interface_Test, Interfaces_Calculate_Flux) {
 						 2,	5,	6,	4 };
 
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
-	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_TETRA, nodes);
+	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
 	faces_sort(faces);
 
@@ -88,7 +88,7 @@ TEST(Interface_Test, Interface_Update_Element_Value) {
 						 2,	5,	6,	4 };
 
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
-	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_TETRA, nodes);
+	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
 	faces_sort(faces);
 

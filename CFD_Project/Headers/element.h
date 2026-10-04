@@ -6,7 +6,7 @@ typedef struct Face Face;
 
 typedef enum {
 	ELEMENT_TRI,
-	ELEMENT_TETRA,
+	ELEMENT_QUAD,
 	ELEMENT_HEXA,
 	N_ELEMENTS
 
@@ -46,7 +46,7 @@ typedef struct Element {
 /// Create a new element
 /// </summary>
 /// <param name="nodes">Array of pointer to the nodes that form the element</param>
-/// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_TETRA & ELEMENT_HEXA </param>
+/// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
 /// <param name="id">Element id</param>
 /// <returns>Element pointer: Pointer to the new element</returns>
 Element* element_create(Node** nodes, Element_Types_Avialable element_type, int id);
@@ -102,7 +102,7 @@ typedef struct Elements {
 /// </summary>
 /// <param name="nodes_index">Array of nodes ids that define which nodes form each element</param>
 /// <param name="size_array">Number of values that are in the "nodes_index" array</param>
-/// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_TETRA & ELEMENT_HEXA </param>
+/// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
 /// <param name="nodes_list">Nodes list with the created nodes</param>
 /// <returns>Returns a "elements" struct with all the new elemnts and the quantity</returns>
 Elements* elements_create(int* nodes_index, int size_array, Element_Types_Avialable element_type, Nodes* nodes_list);
