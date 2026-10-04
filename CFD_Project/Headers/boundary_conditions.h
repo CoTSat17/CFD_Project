@@ -36,6 +36,15 @@ void boundary_create(Face* face, Boundary* memory_position);
 void boundary_update(Boundary* boundary, Boundary_Type bc_type, float value);
 
 
+/// <summary>
+/// Calculates the flux due to boundary conditions
+/// <para>--</para>
+/// </summary>
+/// <param name="boundary">boundary where the flux will be calculated</param>
+void boundary_calculate_flux(Boundary* boundary);
+
+
+
 typedef struct Boundaries {
 	Boundary* boundary_array;
 	int n_boundaries;
@@ -48,3 +57,11 @@ typedef struct Boundaries {
 /// <returns>Pointer to the struct that stores the Boundaries</returns>
 Boundaries* boundaries_create(Faces* faces);
 
+
+
+/// <summary>
+/// Calculates the flux due to boundary conditions
+/// <para>--</para>
+/// </summary>
+/// <param name="boundaries"> Group of boundaries where the flux will be calculated</param>
+void boundaries_calculate_flux(Boundaries* boundaries);

@@ -13,6 +13,16 @@ void boundary_create(Face* face, Boundary* memory_position) {
 }
 
 
+void boundary_calculate_flux(Boundary* boundary) {
+	// The process depends on the type of boundary
+	if (boundary->BC_type == NEUMAN) {
+		boundary->flux = boundary->fixed_value;
+	}
+	else if (boundary->BC_type == DIRICHLET) {
+		boundary->flux = (boundary->fixed_value - boundary->element->test_value)
+									/ element_dist_to_face(boundary->element, boundary->face);
+	}
+}
 
 
 
@@ -66,4 +76,14 @@ Boundaries* boundaries_create(Faces* faces) {
 	if (boundary_adjusted == NULL) return NULL;
 
 	return boundary_adjusted;
+}
+
+
+
+
+
+void boundaries_calculate_flux(Boundaries* boundaries) {
+	for (int i = 0; i < boundaries->n_boundaries; i++) {
+		boundary_calculate_flux(&boundaries->boundary_array[i]);		
+	}
 }
