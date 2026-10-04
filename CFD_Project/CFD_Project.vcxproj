@@ -143,6 +143,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Headers\boundary_conditions.h" />
+    <ClCompile Include="Source\boundary_conditions.c" />
     <ClCompile Include="Source\element.c" />
     <ClCompile Include="Source\faces.c" />
     <ClCompile Include="Source\interface.c" />

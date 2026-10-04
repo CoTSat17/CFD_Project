@@ -33,6 +33,12 @@
     <ClCompile Include="Source\interface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Headers\boundary_conditions.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\boundary_conditions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\node.h">
