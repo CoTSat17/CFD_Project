@@ -88,6 +88,31 @@ TEST(Interface_Test, Interface_Update_Element_Value) {
 						 2,	5,	6,	4 };
 
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
+	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_TETRA, nodes);
+	Faces* faces = faces_create_from_elements(elements);
+	faces_sort(faces);
+
+	Interfaces* interfaces = interfaces_create(faces);
+	elements->elements[0]->test_value = 1.0;
+	interfaces_calculate_flux(interfaces);
+
+
+	interfaces_update_element_value(interfaces);
+
+
+
+TEST(Interface_Test, Interface_Update_Element_Value) {
+	float nodes_position[] = { 0.0,	0.0,	0.0,
+								1.0,	0.0,	0.0,
+								0.0,	1.0,	0.0,
+								1.0,	1.0,	0.0,
+								2.0,	0.0,	0.0,
+								2.0,	1.0,	0.0 };
+
+	int node_index[] = { 1,	2,	4,	3,
+						 2,	5,	6,	4 };
+
+	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
 	faces_sort(faces);
