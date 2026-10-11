@@ -75,3 +75,31 @@ TEST(Nodes_Test, Nodes_Creation) {
 }
 
 
+
+
+
+TEST(Nodes_Test, Nodes_Fill) {
+	float node_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+
+	nodes_fill(nodes, node_data, 3);
+
+	//TEST n_nodes
+	EXPECT_EQ(nodes->n_nodes, 3);
+
+	for (int i = 0; i < nodes->n_nodes; i++) {
+		// TEST id of nodes is correct
+		EXPECT_EQ(nodes->nodes[i]->id, i + 1.0);
+
+		// TEST position of nodes
+		EXPECT_EQ(nodes->nodes[i]->position.x, node_data[i * 4 + 1]);
+		EXPECT_EQ(nodes->nodes[i]->position.y, node_data[i * 4 + 2]);
+		EXPECT_EQ(nodes->nodes[i]->position.z, node_data[i * 4 + 3]);
+	}
+
+
+	nodes_destroy(nodes);
+}

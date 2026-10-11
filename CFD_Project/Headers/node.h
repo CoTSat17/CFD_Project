@@ -54,6 +54,20 @@ typedef struct Nodes {
 /// <returns>Returns a nodes struct with all the new node and the quantity</returns>
 Nodes* nodes_create(float* nodes_position, int size_array);
 
+
+
+/// <summary>
+/// From a already existing nodes struct, its filled with the corresponding data
+///      
+/// Takes the ID from the input file
+/// </summary>
+/// <param name="nodes_struct">Struct to be filled</param>
+/// <param name="nodes_data">Array with the structure: [ id, x, y, z, ...]</param>
+/// <param name="n_nodes">Number of nodes</param>
+void nodes_fill(Nodes* nodes_struct, float* nodes_data, int n_nodes);
+
+
+
 /// <summary>
 /// Destroys and frees the memory of all the "nodes" struct and all the "node" in it
 /// </summary>

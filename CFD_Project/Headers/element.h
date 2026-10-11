@@ -109,4 +109,15 @@ Elements* elements_create(int* nodes_index, int size_array, Element_Types_Aviala
 
 
 
+/// <summary>
+/// From a already existing elements struct, its filled with the corresponding data
+///      
+/// Takes the ID from the input file
+/// </summary>
+/// <param name="elements_struct">Struct to be filled</param>
+/// <param name="elements_data">Array with the structure: [ id, node_id_1, node_id_2, node_id_3, ...]</param>
+/// <param name="n_elements">Number of values that are in the "nodes_index" array</param>
+/// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
+/// <param name="nodes_list">Nodes list with the created nodes</param>
+void elements_fill(Elements* elements_struct,int* elements_data, int n_elements, Element_Types_Avialable element_type, Nodes* nodes_list);
 

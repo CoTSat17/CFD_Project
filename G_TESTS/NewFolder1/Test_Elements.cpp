@@ -177,6 +177,35 @@ TEST(Element_Test, Elements_Create) {
 
 
 
+TEST(Element_Test, Elements_Fill) {
+	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	1.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+
+
+	// Test size
+	EXPECT_EQ(elements->n_elements, 2);
+
+	// Test elements
+	EXPECT_EQ(elements->elements[0]->id, 1.0);
+	EXPECT_EQ(elements->elements[0]->nodes[1]->id, 2);
+
+
+}
+
+
 
 TEST(Element_Test, Element_dist_To_Face) {
 	float positions[] = {	0.0,	0.0,	0.0,
@@ -204,3 +233,4 @@ TEST(Element_Test, Element_dist_To_Face) {
 
 
 }
+

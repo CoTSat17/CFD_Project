@@ -125,6 +125,62 @@ Elements* elements_create(int* nodes_index, int size_array, Element_Types_Aviala
 
 
 
+
+void elements_fill(Elements* elements_struct, int* elements_data, int n_elements, Element_Types_Avialable element_type, Nodes* nodes_list) {
+
+	int element_size = element_type_data[element_type].n_nodes;
+
+	// --------------
+	// Set N_elements
+	// --------------
+	elements_struct->n_elements = n_elements;
+
+
+
+	// -----------------------------
+	// Create the arrray of elements
+	// -----------------------------
+
+	// Allocate enought space
+	elements_struct->elements = (Element**)malloc(sizeof(Element*) * elements_struct->n_elements);
+	if (elements_struct->elements == NULL) return NULL;
+
+	// Iterate for each new element
+	for (int i = 0; i < elements_struct->n_elements; i++) {
+
+		// Read the idexes and find the Node
+		Node** element_nodes = (Node**)malloc(sizeof(Node*) * element_size);
+		if (element_nodes == NULL) return NULL;
+
+		for (int j = 0; j < element_size; j++) {
+			element_nodes[j] = nodes_search_id(nodes_list, elements_data[i * (element_size +1)+ j + 1]);
+		}
+		Element* element = element_create(element_nodes, element_type, elements_data[(element_size + 1) * i]);
+
+
+		// Asign the new element to the elements array
+		elements_struct->elements[i] = element;
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Element_Type element_type_data[N_ELEMENTS] = {
 	[ELEMENT_TRI] = {.n_nodes = 3,
 						.n_faces = 3,

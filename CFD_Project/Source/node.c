@@ -51,6 +51,33 @@ Nodes* nodes_create(float* nodes_position, int size_array) {
 
 
 
+
+void nodes_fill(Nodes* nodes_struct, float* nodes_data, int n_nodes) {
+
+	// -----------
+	// Set n_nodes
+	// -----------
+	nodes_struct->n_nodes = n_nodes;
+
+
+
+	// -----------------------
+	// Set the array of nodes
+	// -----------------------
+
+	nodes_struct->nodes = (Node**)malloc(sizeof(Node*) * nodes_struct->n_nodes);
+	if (nodes_struct->nodes == NULL) return NULL;
+
+	for (int i = 0; i < nodes_struct->n_nodes; i++) {
+		nodes_struct->nodes[i] = node_create(nodes_data[1 + i*4], nodes_data[2 + i*4], nodes_data[3+ i*4], nodes_data[i*4]);
+	}
+
+
+}
+
+
+
+
 void nodes_destroy(Nodes* nodes) {
 	for (int i = 0; i < nodes->n_nodes; i++) {
 		node_destroy(nodes->nodes[i]);
