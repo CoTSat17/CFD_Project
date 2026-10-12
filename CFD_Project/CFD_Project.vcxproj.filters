@@ -39,6 +39,9 @@
     <ClCompile Include="Source\boundary_conditions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\setup_reader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\node.h">
@@ -59,5 +62,11 @@
     <ClInclude Include="Headers\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\file_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="setpup.txt" />
   </ItemGroup>
 </Project>

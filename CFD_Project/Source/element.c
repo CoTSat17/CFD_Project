@@ -200,3 +200,21 @@ Element_Type element_type_data[N_ELEMENTS] = {
 						.node_per_face = 4
 					},
 };
+
+
+
+
+
+
+
+
+void elements_init_conditions(Elements* elements_struct, int* init_values) {
+	int element_id;
+	int element_value;
+
+	for (int i = 0; i < elements_struct->n_elements; i++) {
+		element_id = init_values[i*2];
+		element_value = init_values[i*2 + 1];
+
+	}
+}

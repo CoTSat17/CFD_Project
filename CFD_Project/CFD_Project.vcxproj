@@ -151,14 +151,19 @@
     <ClCompile Include="Source\main.c" />
     <ClCompile Include="Source\node.c" />
     <ClCompile Include="Source\point.c" />
+    <ClCompile Include="Source\setup_reader.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\element.h" />
     <ClInclude Include="Headers\faces.h" />
+    <ClInclude Include="Headers\file_reader.h" />
     <ClInclude Include="Headers\interface.h" />
     <ClInclude Include="Headers\main.h" />
     <ClInclude Include="Headers\node.h" />
     <ClInclude Include="Headers\point.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="setpup.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
