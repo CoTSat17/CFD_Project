@@ -31,7 +31,20 @@ void file_nodes_preprocesser(FILE* file, Nodes* nodes, int count);
 /// </summary>
 /// <param name="file">File that contains the information</param>
 /// <param name="elements">Struct where the info is saved</param>
-/// <param name="count">Number of Nodes</param>
+/// <param name="count">Number of Elements</param>
 /// <param name="element_type">element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA</param>
 /// <param name="nodes">Nodes struct that contains nodes info</param>
 void file_elements_preprocesser(FILE* file, Elements* elements, int count, Element_Types_Avialable element_type, Nodes* nodes);
+
+
+
+
+/// <summary>
+/// From the input file it processes the section of INIT_VALUES.
+/// 
+/// <para> Calls "elements_init_conditions" to save the info in the elements</para> 
+/// </summary>
+/// <param name="file">File that contains the information</param>
+/// <param name="elements">Struct where the info is saved</param>
+/// <param name="count">Number of Elements</param>
+void file_elements_initial_values(FILE* file, Elements* elements, int count);

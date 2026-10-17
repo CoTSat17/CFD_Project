@@ -71,7 +71,7 @@ void file_read(Nodes* nodes, Elements* elements) {
 		/// PROCESS INITIAL CONDITIONS
 		if (strcmp(key, "INIT_VALUES") == 0) {
 			printf("PROCESSING INIT_VALUES \n");
-
+			file_elements_initial_values(file, elements, count);
 		}
 		
 
@@ -98,7 +98,7 @@ void file_nodes_preprocesser(FILE* file, Nodes* nodes, int count) {
 	/// the data is stored in a array thats used later to fill the array
 
 	for (int i = 0; i < count*4; i++) {
-		fscanf(file, "%f", &node_data[i]);
+		fscanf_s(file, "%f", &node_data[i]);
 	}
 
 	/// -----------------
@@ -128,7 +128,7 @@ void file_elements_preprocesser(FILE* file, Elements* elements, int count, Eleme
 	/// The data is stored in a array thats used later to fill the array
 
 	for (int i = 0; i < n_ints; i++) {
-		fscanf(file, "%d", &element_data[i]);
+		fscanf_s(file, "%d", &element_data[i]);
 	}
 
 	/// -----------------
@@ -137,5 +137,35 @@ void file_elements_preprocesser(FILE* file, Elements* elements, int count, Eleme
 	/// With the array that stores the file data,
 	/// fill the previously created "elements" struct
 	elements_fill(elements, element_data, count, element_type, nodes);
+
+}
+
+
+void file_elements_initial_values(FILE* file, Elements* elements, int count) {
+	/// -----------------------------
+	/// RESERVE MEMORY FOR THE ARRAY
+	/// -----------------------------
+	/// For "count" elements is: 2
+	int n_floats = count * (2);
+	float* init_value_data = (float*)malloc(n_floats * sizeof(float));
+
+
+	/// -----------------
+	/// PROCESS EACH LINE
+	/// -----------------
+	/// The data is stored in a array thats used later
+	
+	for (int i = 0; i < n_floats; i++) {
+		fscanf_s(file, "%f", &init_value_data[i]);
+	}
+
+
+	/// ----------------------------------------
+	/// APPLY THE INITIAL VALUE TO THE ELEMENTS
+	/// ----------------------------------------
+	/// With the array that stores the inital values,
+	/// fill the previously created "elements" struct
+
+	elements_init_conditions(elements, init_value_data);
 
 }
