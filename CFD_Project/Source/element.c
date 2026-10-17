@@ -208,13 +208,27 @@ Element_Type element_type_data[N_ELEMENTS] = {
 
 
 
-void elements_init_conditions(Elements* elements_struct, int* init_values) {
+void elements_init_conditions(Elements* elements_struct, float* init_values) {
 	int element_id;
 	int element_value;
 
 	for (int i = 0; i < elements_struct->n_elements; i++) {
 		element_id = init_values[i*2];
 		element_value = init_values[i*2 + 1];
+		Element* element = elements_search_id(elements_struct, element_id);
 
+		element->test_value = element_value;
 	}
+}
+
+
+
+
+
+Element* elements_search_id(Elements* elements_struct, int id) {
+	for (int i = 0; i < elements_struct->n_elements; i++) {
+		if (elements_struct->elements[i]->id == id) return elements_struct->elements[i];
+	}
+
+
 }

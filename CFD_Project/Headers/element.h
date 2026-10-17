@@ -127,4 +127,16 @@ void elements_fill(Elements* elements_struct,int* elements_data, int n_elements,
 /// </summary>
 /// <param name="elements_struct">Struct where elements are stored</param>
 /// <param name="init_values">Array of initial values</param>
-void elements_init_conditions(Elements* elements_struct, int* init_values);
+void elements_init_conditions(Elements* elements_struct, float* init_values);
+
+
+
+
+
+/// <summary>
+/// Searches the Elements structs for the element with the given id
+/// </summary>
+/// <param name="elements_struct">Elements Struct where the search will be performed</param>
+/// <param name="id">Id to search</param>
+/// <returns>Pointer to the element that has the indicated ID</returns>
+Element* elements_search_id(Elements* elements_struct, int id);

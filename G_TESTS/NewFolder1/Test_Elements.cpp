@@ -234,3 +234,69 @@ TEST(Element_Test, Element_dist_To_Face) {
 
 }
 
+
+
+
+
+TEST(Element_Test, Elements_Search_Id) {
+	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	1.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+
+	// CHECK FOR ID=1
+	Element* searched_element = elements_search_id(elements, 1);
+	EXPECT_EQ(searched_element->id, 1);
+
+	// CHECK FOR ID=2
+	searched_element = elements_search_id(elements, 2);
+	EXPECT_EQ(searched_element->id, 2);
+
+}
+
+
+
+
+
+TEST(Element_Test, Elements_Init_Conditions) {
+	float nodes_data[] = { 1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	1.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+	float init_values[] = { 1,	0.0,
+							2,	10.0 };
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+
+
+	elements_init_conditions(elements, init_values);
+
+
+
+
+	// TEST INITIAL VALUES
+	EXPECT_FLOAT_EQ(elements->elements[0]->test_value, 0.0);
+	EXPECT_FLOAT_EQ(elements->elements[1]->test_value, 10.0);
+
+
+}
+
