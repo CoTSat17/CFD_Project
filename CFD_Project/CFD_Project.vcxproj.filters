@@ -42,6 +42,12 @@
     <ClCompile Include="Source\setup_reader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\materials.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\math_test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\node.h">
@@ -63,6 +69,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\file_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\materials.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\math_test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

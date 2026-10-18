@@ -149,6 +149,8 @@
     <ClCompile Include="Source\faces.c" />
     <ClCompile Include="Source\interface.c" />
     <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\materials.c" />
+    <ClCompile Include="Source\math_test.c" />
     <ClCompile Include="Source\node.c" />
     <ClCompile Include="Source\point.c" />
     <ClCompile Include="Source\setup_reader.c" />
@@ -159,6 +161,8 @@
     <ClInclude Include="Headers\file_reader.h" />
     <ClInclude Include="Headers\interface.h" />
     <ClInclude Include="Headers\main.h" />
+    <ClInclude Include="Headers\materials.h" />
+    <ClInclude Include="Headers\math_test.h" />
     <ClInclude Include="Headers\node.h" />
     <ClInclude Include="Headers\point.h" />
   </ItemGroup>
