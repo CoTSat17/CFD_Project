@@ -68,7 +68,7 @@ Matrix* matrix_product(Matrix* matrix_1, Matrix* matrix_2) {
 
 	float value;
 	for (int i = 0; i < new_mat_rows; i++) {
-		for (int j = 0; j < new_mat_rows; j++) {
+		for (int j = 0; j < new_mat_cols; j++) {
 			value = 0;
 
 			for (int k = 0; k < matrix_1->n_col; k++) {
@@ -138,6 +138,236 @@ float matrix_det3(Matrix* matrix) {
 
 
 
+float matrix_det(Matrix* matrix) {
+	if (matrix->n_col == 2) {
+		return matrix_det2(matrix);
+	}
+	if (matrix->n_col == 3) {
+		return matrix_det3(matrix);
+	}
+
+}
+
+
+
 float matrix_det2(Matrix* matrix) {
 	return matrix_value(matrix, 0, 0) * matrix_value(matrix, 1, 1) - matrix_value(matrix, 0, 1) * matrix_value(matrix, 1, 0);
+}
+
+
+
+
+
+
+
+#define S3 0.57735f
+
+/// -------------
+/// Tri dN DATA
+/// -------------
+static const float tri_w_values[] = { 1.0/2.0 };
+
+/// -------------
+/// TET4 dN DATA
+/// -------------
+static const float tet_w_values[] = { 1.0 / 6.0 };
+
+/// -------------
+/// QUAD dN DATA
+/// -------------
+
+static const float quad_xi_values[]	 =  { -S3, S3, S3,-S3 }; 
+static const float quad_eta_values[] =  { -S3,-S3, S3, S3 };
+static const float quad_w_values[]   =  { 1,  1,  1,  1 };
+
+static const float quad_dN_values[]     = {-1,-1, 1,-1, 1, 1,-1, 1 };
+static const float quad_xi_positions[]  = { 1, 0,-1, 0, 1, 0,-1, 0 };
+static const float quad_eta_positions[] = { 0, 1, 0,-1, 0, 1, 0,-1 };
+
+
+/// -------------
+/// HEX dN DATA
+/// -------------
+
+static const float hex_xi_values[] =   { -S3, S3, S3,-S3,-S3, S3, S3,-S3 };
+static const float hex_eta_values[] =  { -S3,-S3, S3, S3,-S3,-S3, S3, S3 };
+static const float hex_zeta_values[] = { -S3,-S3,-S3,-S3, S3, S3, S3, S3 };
+static const float hex_w_values[] =   { 1, 1, 1, 1, 1, 1, 1, 1 };
+
+static const float hex_dN_values[] =    {	-1,-1,-1,
+											 1,-1,-1,
+											 1, 1,-1,
+											-1, 1,-1,
+											-1,-1, 1,
+											 1,-1, 1,
+											 1, 1, 1,
+											-1, 1, 1};
+
+static const float hex_xi_positions[] = {	 0,-1,-1,
+											 0, 1, 1,
+											 0, 1, 1,
+											 0,-1,-1,
+											 0,-1,-1,
+											 0, 1, 1,
+											 0, 1, 1,
+											 0,-1,-1 };
+
+
+static const float hex_eta_positions[] = {	-1, 0,-1,
+											-1, 0,-1,
+											 1, 0, 1,
+											 1, 0, 1,
+											-1, 0,-1,
+											-1, 0,-1,
+											 1, 0, 1,
+											 1, 0, 1 };
+
+
+static const float hex_zeta_positions[] = { -1,-1, 0,
+											-1,-1, 0,
+											-1,-1, 0,
+											-1,-1, 0,
+											 1, 1, 0,
+											 1, 1, 0,
+											 1, 1, 0,
+											 1, 1, 0 };
+
+
+static Matrix** calc_dNg_matrix(int* n_matrix, Gauss_Data_Types type) {
+	switch (type)  {
+
+	case QUAD4: {
+		// For QUAD4 a total of 4 points are needed
+		*n_matrix = 4;
+
+		// Allocate space for the 4 matixes
+		Matrix** matrix_array = (Matrix**)malloc(*n_matrix * sizeof(Matrix*));
+
+		for (int g = 0; g < *n_matrix; g++) {
+			int n_values = sizeof(quad_dN_values) / sizeof(quad_dN_values[0]);
+
+			float* values = (float*)malloc(sizeof(float) * n_values);
+
+			float xi_value = quad_xi_values[g];
+			float eta_value = quad_eta_values[g];
+
+			for (int i = 0; i < n_values; i++) {
+				values[i] = 0.25 * (quad_dN_values[i] + xi_value * quad_xi_positions[i] + eta_value * quad_eta_positions[i]);
+			}
+
+			matrix_array[g] = matrix_create(values, 2, 4);
+		}
+
+		return matrix_array;
+	}
+	
+
+	case HEX8: {
+		// For HEX8 a total of 8 points are needed
+		*n_matrix = 8;
+
+		// Allocate space for the 8 matixes
+		Matrix** matrix_array = (Matrix**)malloc(*n_matrix * sizeof(Matrix*));
+
+		for (int g = 0; g < *n_matrix; g++) {
+			int n_values = sizeof(hex_dN_values) / sizeof(hex_dN_values[0]);
+
+			float* values = (float*)malloc(sizeof(float) * n_values);
+
+			float xi_value = hex_xi_values[g];
+			float eta_value = hex_eta_values[g];
+			float zeta_value = hex_zeta_values[g];
+
+			for (int i = 0; i < n_values; i++) {
+				values[i] = 0.125* hex_dN_values[i] * ((1 + xi_value * hex_xi_positions[i]) * (1 + eta_value * hex_eta_positions[i]) * (1 + zeta_value * hex_zeta_positions[i]));
+			}
+
+			matrix_array[g] = matrix_create(values, 3, 8);
+		}
+
+		return matrix_array;
+	}
+	
+	case TRI3: {
+		// For TRI3 a total of 1 point is needed
+		*n_matrix = 1;
+		// Allocate space for the 1 matixes
+		Matrix** matrix_array = (Matrix**)malloc(*n_matrix * sizeof(Matrix*));
+
+		float values[] = { -1,-1, 1, 0, 0, 1 };
+
+
+		matrix_array[0] = matrix_create(values, 2, 3);
+
+
+		return matrix_array;
+	}
+	case TET4: {
+		// For TET4 a total of 1 point is needed
+		*n_matrix = 1;
+		// Allocate space for the 1 matixes
+		Matrix** matrix_array = (Matrix**)malloc(*n_matrix * sizeof(Matrix*));
+
+		float values[] = { -1,-1,-1,	 1, 0, 0,		 0, 1, 0,	0, 0, 1 };
+
+
+		matrix_array[0] = matrix_create(values, 3, 4);
+
+
+		return matrix_array;
+	}
+	}
+}
+
+
+
+
+
+float calc_volume(Matrix* positions, Gauss_Data_Types type) {
+
+	float result = 0;
+
+	static int n_matrix = 0;
+	static Matrix** dN_g;
+	static int initialized = 0;
+	static Gauss_Data_Types previous_type;
+
+	if (!initialized || previous_type != type) {
+		dN_g = calc_dNg_matrix(&n_matrix, type);
+		initialized = 1;
+		previous_type = type;
+	}
+
+
+	for (int g = 0; g < n_matrix; g++) {
+
+		Matrix* positions_transpose = matrix_transpose(positions);
+		Matrix* jacobian = matrix_product(positions_transpose, dN_g[g]);
+		float jacobian_det = matrix_det(jacobian);
+		if (jacobian_det < 0.0) jacobian_det = -jacobian_det;
+		free(positions_transpose);
+		free(jacobian);
+
+
+		switch (type) {
+			
+			case QUAD4: 
+				result += quad_w_values[g] * jacobian_det;
+				break;
+			case HEX8:
+				result += hex_w_values[g] * jacobian_det;
+				break;
+			case TRI3:
+				result += tri_w_values[g] * jacobian_det;
+				break;
+			case TET4:
+				result += tet_w_values[g] * jacobian_det;
+				break;
+		}
+
+
+
+	}
+
+	return result;
 }

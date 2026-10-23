@@ -3,6 +3,8 @@
 
 
 
+
+
 typedef struct Matrix {
 	int n_col;
 	int n_row;
@@ -44,5 +46,32 @@ float matrix_value(Matrix* matrix, int row, int col);
 Matrix* matrix_transpose(Matrix* matrix);
 
 
+float matrix_det(Matrix* matrix);
 float matrix_det3(Matrix* matrix);
 float matrix_det2(Matrix* matrix);
+
+
+
+
+typedef enum Gauss_Data_Types {
+	TRI3,
+	QUAD4,
+	TET4,
+	HEX8
+}Gauss_Data_Types;
+
+/// <summary>
+/// Calculates and returns an array of pointers to Matrix objects based on the provided matrix count and Gauss data type.
+/// </summary>
+/// <param name="n_matrix">Pointer to an integer specifying the number of matrices to calculate.</param>
+/// <param name="type">The Gauss_Data_Types value indicating the type of Gauss data to use in the calculation.</param>
+/// <returns>A pointer to an array of Matrix pointers containing the calculated matrices.</returns>
+static Matrix** calc_dNg_matrix(int* n_matrix, Gauss_Data_Types type);
+
+/// <summary>
+/// Calculates the volume based on the provided positions and Gaussian data type.
+/// </summary>
+/// <param name="positions">Pointer to a Matrix containing position data. [x,y,z, x,y,z, ...] (3D) // [x,y, x,y, ...] (2D) </param>
+/// <param name="type">The Gaussian data type used for the calculation.</param>
+/// <returns>The calculated volume as a float.</returns>
+float calc_volume(Matrix* positions, Gauss_Data_Types type);

@@ -96,3 +96,48 @@ TEST(Math_Test, Matrix_Mat2) {
 
 	EXPECT_FLOAT_EQ(det, -1.0);
 }
+
+
+
+
+TEST(Math_Test, Calc_Volume) {
+
+	// QUAD4
+
+	float points_QUAD4[] = { 0.0, 0.0, 4.0, 0.0, 3.0, 2.0, 1.0, 2.0 };
+
+	Matrix* points_matrix = matrix_create(points_QUAD4, 2, 4);
+
+	float volume_QUAD4 = calc_volume(points_matrix, QUAD4);
+
+	EXPECT_FLOAT_EQ(volume_QUAD4, 6.0);
+	free(points_matrix);
+
+
+	// HEX8
+	float points_HEX8[] = {  0,0,0,  1,0,0,  1,1,0,  0,1,0,
+						0,0,1,  1,0,1,  1,1,1,  0,1,1 };
+
+	points_matrix = matrix_create(points_HEX8, 3, 8);
+
+	float volume_HEX8 = calc_volume(points_matrix, HEX8);
+
+	EXPECT_FLOAT_EQ(volume_HEX8, 1.0);
+
+	// TRI3
+	float points_TRI3[] = { 0,0,  1,0,  0,1 };
+
+	points_matrix = matrix_create(points_TRI3, 2, 3);
+
+	float volume_TRI3 = calc_volume(points_matrix, TRI3);
+
+	EXPECT_FLOAT_EQ(volume_TRI3, 0.5);
+
+	// TET4
+	float points_TET4[] = {		0,0,0,		1,0,0,		0,1,0,		0,0,1};
+	points_matrix = matrix_create(points_TET4, 3, 4);
+
+	float volume_TET4 = calc_volume(points_matrix, TET4);
+
+	EXPECT_FLOAT_EQ(volume_TET4, 0.16666667);
+}
