@@ -16,6 +16,12 @@ Element* element_create(Node** nodes, Element_Types_Avialable element_type, int 
 
 	element->id = id;
 	element->test_value = 0;
+	element->volume = 0.0;
+
+
+	
+
+
 	return element;
 }
 
@@ -74,6 +80,64 @@ Point element_center(Element* element_1) {
 	}
 
 	return center_position;
+}
+
+
+
+float element_volume(Element* element_struct) {
+
+	/// -----------------------------------------
+	/// CREATE AN ARRAY WITH NODE POSITION DATA
+	/// -----------------------------------------
+	int element_dimmension = element_struct->element_type->dimmension;
+	float* nodes_position = (float*)malloc(element_struct->element_type->n_nodes * element_dimmension * sizeof(float));
+	float* new_value = nodes_position;
+
+	for (int node = 0; node < element_struct->element_type->n_nodes; node++) {
+		*new_value = element_struct->nodes[node]->position.x;
+		new_value++;
+		*new_value = element_struct->nodes[node]->position.y;
+		new_value++;
+		// IF ELEMENT 2D -> Skip .z
+		if (element_dimmension == 2) continue;
+		*new_value = element_struct->nodes[node]->position.z;
+		new_value++;
+	}
+
+	// SAVE VALUES AS MATRIX
+	Matrix* positions_matrix = matrix_create(nodes_position, element_dimmension, element_struct->element_type->n_nodes);
+
+
+	/// -----------------------------------------
+	/// DETERMINE THE TYPE OF ELEMENT FOR VOLUME CALCULATION
+	/// -----------------------------------------
+
+
+	Gauss_Data_Types type;
+	switch (element_struct->element_type->type) {
+		case ELEMENT_TRI: 
+			type = TRI3;
+			break;
+		case ELEMENT_QUAD: 
+			type = QUAD4;
+			break;
+		case ELEMENT_HEXA:
+			type = HEX8;
+			break;
+
+	}
+
+	/// -----------------------------------------
+	/// CALCULATE AND FREE
+	/// -----------------------------------------
+	element_struct->volume = calc_volume(positions_matrix, type);
+
+	free(positions_matrix);
+	positions_matrix = NULL;
+	free(nodes_position);
+	nodes_position = NULL;
+	new_value = NULL;
+
 }
 
 
@@ -185,19 +249,25 @@ Element_Type element_type_data[N_ELEMENTS] = {
 	[ELEMENT_TRI] = {.n_nodes = 3,
 						.n_faces = 3,
 						.face_nodes =	 {	{0,1},	{1,2},	{2,0} },
-						.node_per_face = 2
+						.node_per_face = 2,
+						.dimmension = 2,
+						.type = ELEMENT_TRI
 					},
 
 	[ELEMENT_QUAD] = {.n_nodes = 4,
 						.n_faces = 4,
 						.face_nodes = {		{0,1},	{1,2},	{2,3},	{3,0} },
-						.node_per_face = 2
+						.node_per_face = 2,
+						.dimmension = 2,
+						.type = ELEMENT_QUAD
 					},
 
 	[ELEMENT_HEXA] = {.n_nodes = 8,
 						.n_faces = 6,
 						.face_nodes = {		{0,1,2,3},	{4,5,6,7},	{0,1,5,4},	{1,2,6,5},	{2,3,7,6},	{3,0,4,7} },
-						.node_per_face = 4
+						.node_per_face = 4,
+						.dimmension = 3,
+						.type = ELEMENT_HEXA
 					},
 };
 
@@ -231,4 +301,14 @@ Element* elements_search_id(Elements* elements_struct, int id) {
 	}
 
 
+}
+
+
+
+
+
+void elements_calc_volume(Elements* elements_struct) {
+	for (int i = 0; i < elements_struct->n_elements; i++) {
+		element_volume(elements_struct->elements[i]);
+	}
 }

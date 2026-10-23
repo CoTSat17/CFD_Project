@@ -285,7 +285,7 @@ TEST(Element_Test, Elements_Init_Conditions) {
 	nodes_fill(nodes, nodes_data, 4);
 
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
-	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+	elements_fill(elements, elements_data, 2, ELEMENT_QUAD, nodes);
 
 
 	elements_init_conditions(elements, init_values);
@@ -300,3 +300,33 @@ TEST(Element_Test, Elements_Init_Conditions) {
 
 }
 
+
+
+TEST(Element_Test, Elements_Cacl_Volume) {
+	float nodes_data[] = {  1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	2.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+
+
+	elements_calc_volume(elements);
+
+	
+
+	// TEST Volumes
+	EXPECT_FLOAT_EQ(elements->elements[0]->volume, 0.5);
+	EXPECT_FLOAT_EQ(elements->elements[1]->volume, 1.0);
+
+}

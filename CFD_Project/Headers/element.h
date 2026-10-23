@@ -1,5 +1,6 @@
 #pragma once
 #include <node.h>
+#include <math_test.h>
 
 typedef struct Face Face;
 
@@ -26,6 +27,8 @@ typedef struct Element_Type {
 	int n_faces;
 	int face_nodes[MAX_FACES_PER_ELEM][MAX_NODES_PER_ELEM];
 	int node_per_face;
+	int dimmension;
+	Element_Types_Avialable type;
 }Element_Type;
 
 
@@ -40,6 +43,7 @@ typedef struct Element {
 	float  test_value;
 	Element_Type*    element_type;
 	int    id;
+	float volume;
 }Element;
 
 /// <summary>
@@ -86,6 +90,12 @@ Point element_center(Element* element_1);
 
 
 
+/// <summary>
+/// Calculates the volume of a given element.
+/// </summary>
+/// <param name="element_struct">Pointer to the Element structure for which the volume is calculated.</param>
+/// <returns>The volume of the element as a float.</returns>
+float element_volume(Element* element_struct);
 
 
 
@@ -140,3 +150,10 @@ void elements_init_conditions(Elements* elements_struct, float* init_values);
 /// <param name="id">Id to search</param>
 /// <returns>Pointer to the element that has the indicated ID</returns>
 Element* elements_search_id(Elements* elements_struct, int id);
+
+
+/// <summary>
+/// Calculates and updates the value of the given Elements structure.
+/// </summary>
+/// <param name="elements_struct">Pointer to the Elements structure whose value will be calculated.</param>
+void elements_calc_volume(Elements* elements_struct);
