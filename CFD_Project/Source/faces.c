@@ -7,7 +7,7 @@ int sort_descending_faces_nodes(const void* a, const void* b);
 
 int faces_equal(Face* face_1, Face* face_2) {
 	for (int i = 0; i < face_1->element->element_type->node_per_face; i++) {
-		if (face_1->nodes_id[i] != face_2->nodes_id[i]) return 0;
+		if (face_1->nodes_id_sorted[i] != face_2->nodes_id_sorted[i]) return 0;
 	}
 
 	return 1;
@@ -81,7 +81,7 @@ Faces* faces_create_from_element(Element* element) {
 		qsort(nodes, element->element_type->node_per_face, sizeof(int), compare_descending);
 
 		// Create the Face struct for this face
-		faces->face_array[i] = (Face){ .nodes_id = nodes, .element = element };
+		faces->face_array[i] = (Face){ .nodes_id = nodes, .element = element, .face_id=i+1 };
 
 	}
 
@@ -108,7 +108,7 @@ Faces* faces_create_from_elements(Elements* elements) {
 	// ---------------
 	// ALLOCATE MEMORY
 	// ---------------
-	Faces* faces = (Faces*)malloc(sizeof(Faces) + n_faces_total * sizeof(Face) + n_nodes_total * sizeof(int));
+	Faces* faces = (Faces*)malloc(sizeof(Faces) + n_faces_total * sizeof(Face) + n_nodes_total * 2 * sizeof(int));
 	if (faces == NULL) return NULL;
 
 	// Fill the Faces struct
@@ -116,8 +116,9 @@ Faces* faces_create_from_elements(Elements* elements) {
 	faces->n_faces = n_faces_total;
 	faces->nodes_pool = (int*)(faces->face_array + n_faces_total); // Beggining of the face_array 
 
-	faces->new_face = faces->face_array;	// Where a new Face struct must be added
-	faces->new_nodes = faces->nodes_pool;	// Where a new Node_id must be added
+	Face* new_face = faces->face_array;	// Where a new Face struct must be added
+	int* new_nodes = faces->nodes_pool;	// Where a new Node_id must be added
+	int* new_sorted_nodes = (int*)(new_nodes + n_nodes_total);
 
 
 	// Iterate through each element
@@ -128,19 +129,21 @@ Faces* faces_create_from_elements(Elements* elements) {
 		//the number of faces of the element is determined by it's type
 		for (int j = 0; j < element->element_type->n_faces; j++) {
 			// Save the "Face" struct in the designated spot in the memory 
-			*faces->new_face = (Face){ .nodes_id = faces->new_nodes, .element = element };
+			*new_face = (Face){ .nodes_id = new_nodes, .nodes_id_sorted = new_sorted_nodes, .element = element, .face_id= i*element->element_type->n_faces + j + 1 };
 
 			// Add to the "nodes_pool" the elements
 			for (int k = 0; k < element->element_type->node_per_face; k++) {
-				*faces->new_nodes = element->nodes[element->element_type->face_nodes[j][k]]->id;
-				faces->new_nodes++;
+				*new_nodes = element->nodes[element->element_type->face_nodes[j][k]]->id;
+				*new_sorted_nodes = element->nodes[element->element_type->face_nodes[j][k]]->id;
+				new_nodes++;
+				new_sorted_nodes++;
 			}
 
 			// Sort the ID values of the nodes from smalles to biggest
-			qsort(faces->new_face->nodes_id, element->element_type->node_per_face, sizeof(int), compare_descending);
+			qsort(new_face->nodes_id_sorted, element->element_type->node_per_face, sizeof(int), compare_descending);
 
 			// Move the memory position where the next "Face" struct must be stored
-			faces->new_face++;
+			new_face++;
 		}
 	}
 
@@ -166,10 +169,28 @@ int compare_descending(const void* a, const void* b)
 
 
 
-void faces_sort(Faces* faces) {
+Faces* faces_sort(Faces* faces) {
 	
-	qsort(faces->face_array, faces->n_faces, sizeof(Face), sort_descending_faces_nodes);
 
+	Faces* sorted_faces = malloc(sizeof(Faces));
+	if (sorted_faces == NULL) return NULL;
+
+	sorted_faces->n_faces = faces->n_faces;
+
+	sorted_faces->face_array =
+		malloc(faces->n_faces * sizeof(Face));
+
+	if (sorted_faces->face_array == NULL) {
+		free(sorted_faces);
+		return NULL;
+	}
+
+	memcpy(	sorted_faces->face_array,faces->face_array,	faces->n_faces * sizeof(Face));
+
+	// Sort the copy
+	qsort(sorted_faces->face_array, sorted_faces->n_faces, sizeof(Face),sort_descending_faces_nodes);
+
+	return sorted_faces;
 }
 
 int sort_descending_faces_nodes(const void* a, const void* b) {
@@ -177,10 +198,18 @@ int sort_descending_faces_nodes(const void* a, const void* b) {
 	const Face* face_b = (const Face*)b;
 
 	for (int i = 0; i < face_a->element->element_type->node_per_face; i++) {
-		if (face_a->nodes_id[i] > face_b->nodes_id[i]) return -1;
-		if (face_a->nodes_id[i] < face_b->nodes_id[i]) return  1;
+		if (face_a->nodes_id_sorted[i] > face_b->nodes_id_sorted[i]) return -1;
+		if (face_a->nodes_id_sorted[i] < face_b->nodes_id_sorted[i]) return  1;
 	}
 
 	return 0;
+
+}
+
+
+
+Face* faces_search_id(Faces* faces_struct, int face_id) {
+	return &faces_struct->face_array[face_id - 1];
+
 
 }

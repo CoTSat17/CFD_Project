@@ -10,6 +10,7 @@
 /// </summary>
 typedef struct Interface {
 	float flux;			///< Flux value between the elements
+	float area;			///< Area of the interface (length if 2D)
 	Element* element_1; ///< Pointer to the "Element" struct that shares normal with the interface
 	Element* element_2; ///< Pointer to the "Element" struct that has it's normal in the opposite direction 
 	Face* face;			///< Face that forms the interface
@@ -43,6 +44,13 @@ void interface_calculate_flux(Interface* interface);
 /// </summary>
 /// <param name="interface">Interface that will be calculated</param>
 void interface_update_element_value(Interface* interface);
+
+
+
+Node* interface_search_node_by_id(Interface* interface, int node_id);
+
+
+void interface_calculate_area(Interface* interface_struct);
 
 
 

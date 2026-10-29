@@ -95,7 +95,7 @@ Point element_center(Element* element_1);
 /// </summary>
 /// <param name="element_struct">Pointer to the Element structure for which the volume is calculated.</param>
 /// <returns>The volume of the element as a float.</returns>
-float element_volume(Element* element_struct);
+void element_volume(Element* element_struct);
 
 
 

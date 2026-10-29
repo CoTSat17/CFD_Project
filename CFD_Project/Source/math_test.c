@@ -343,31 +343,61 @@ float calc_volume(Matrix* positions, Gauss_Data_Types type) {
 
 		Matrix* positions_transpose = matrix_transpose(positions);
 		Matrix* jacobian = matrix_product(positions_transpose, dN_g[g]);
-		float jacobian_det = matrix_det(jacobian);
-		if (jacobian_det < 0.0) jacobian_det = -jacobian_det;
-		free(positions_transpose);
-		free(jacobian);
-
+		
 
 		switch (type) {
 			
-			case QUAD4: 
-				result += quad_w_values[g] * jacobian_det;
+			case QUAD4: {
+				Matrix* jacobian_transpose = matrix_transpose(jacobian);
+				Matrix* jacobian_transpose_jacobian_product = matrix_product(jacobian_transpose, jacobian);
+				result += quad_w_values[g] * sqrtf(matrix_det(jacobian_transpose_jacobian_product) );
+				free(jacobian_transpose);
+				free(jacobian_transpose_jacobian_product);
 				break;
+
+			}
 			case HEX8:
-				result += hex_w_values[g] * jacobian_det;
+				result += hex_w_values[g] * matrix_det(jacobian);
 				break;
-			case TRI3:
-				result += tri_w_values[g] * jacobian_det;
+			case TRI3: {
+				Matrix* jacobian_transpose = matrix_transpose(jacobian);
+				Matrix* jacobian_transpose_jacobian_product = matrix_product(jacobian_transpose, jacobian);
+				result += tri_w_values[g] * sqrtf(matrix_det(jacobian_transpose_jacobian_product));
+				free(jacobian_transpose);
+				free(jacobian_transpose_jacobian_product);
 				break;
+
+			}
 			case TET4:
-				result += tet_w_values[g] * jacobian_det;
+				result += tet_w_values[g] * matrix_det(jacobian);
 				break;
 		}
 
+		free(positions_transpose);
+		free(jacobian);
+		
 
 
 	}
 
 	return result;
+}
+
+
+
+
+float calc_area(Matrix* positions, Gauss_Data_Types type) {
+	/// ---------------------
+	/// 2D ELEMENT INTERFACE
+	/// ---------------------
+	// The area can be calculated calling calc_volume but changing 3D -> 2D element type
+
+	switch (type) {
+	case HEX8:
+		type = QUAD4;
+		break;
+
+	}
+
+	return calc_volume(positions, type);
 }

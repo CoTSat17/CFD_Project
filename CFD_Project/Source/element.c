@@ -84,13 +84,13 @@ Point element_center(Element* element_1) {
 
 
 
-float element_volume(Element* element_struct) {
+void element_volume(Element* element_struct) {
 
 	/// -----------------------------------------
 	/// CREATE AN ARRAY WITH NODE POSITION DATA
 	/// -----------------------------------------
 	int element_dimmension = element_struct->element_type->dimmension;
-	float* nodes_position = (float*)malloc(element_struct->element_type->n_nodes * element_dimmension * sizeof(float));
+	float* nodes_position = (float*)malloc(element_struct->element_type->n_nodes * 3 * sizeof(float));
 	float* new_value = nodes_position;
 
 	for (int node = 0; node < element_struct->element_type->n_nodes; node++) {
@@ -98,14 +98,12 @@ float element_volume(Element* element_struct) {
 		new_value++;
 		*new_value = element_struct->nodes[node]->position.y;
 		new_value++;
-		// IF ELEMENT 2D -> Skip .z
-		if (element_dimmension == 2) continue;
 		*new_value = element_struct->nodes[node]->position.z;
 		new_value++;
 	}
 
 	// SAVE VALUES AS MATRIX
-	Matrix* positions_matrix = matrix_create(nodes_position, element_dimmension, element_struct->element_type->n_nodes);
+	Matrix* positions_matrix = matrix_create(nodes_position, 3, element_struct->element_type->n_nodes);
 
 
 	/// -----------------------------------------

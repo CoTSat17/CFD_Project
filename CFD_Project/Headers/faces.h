@@ -1,6 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #include <element.h>
+#include <string.h>
 
 
 /// <summary>
@@ -8,7 +9,9 @@
 /// </summary>
 typedef struct Face {
 	int* nodes_id;		///< Pointer to array of ids that form the face
+	int* nodes_id_sorted;
 	Element* element;	///< Element that has that face
+	int face_id;
 }Face;
 
 
@@ -67,6 +70,9 @@ Faces* faces_create_from_elements(Elements* elements);
 /// <para> Only the array of "Face" structs is ordered, the pool of node ids remains constant.
 /// </summary>
 /// <param name="faces">Faces struct to sort</param>
-void faces_sort(Faces* faces);
+Faces* faces_sort(Faces* faces);
 
+
+
+Face* faces_search_id(Faces* faces_struct, int face_id);
 

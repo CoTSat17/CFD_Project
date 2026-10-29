@@ -1,6 +1,6 @@
 #pragma once
 #include <stdlib.h>
-
+#include <math.h>
 
 
 
@@ -75,3 +75,15 @@ static Matrix** calc_dNg_matrix(int* n_matrix, Gauss_Data_Types type);
 /// <param name="type">The Gaussian data type used for the calculation.</param>
 /// <returns>The calculated volume as a float.</returns>
 float calc_volume(Matrix* positions, Gauss_Data_Types type);
+
+
+
+
+/// <summary>
+/// Calculates the area based on the given positions and Gaussian data type.
+/// </summary>
+/// <param name="positions">Pointer to a Matrix containing the positions used for area calculation.</param>
+/// <param name="type">The Gaussian data type specifying the calculation method.</param>
+/// <returns>The calculated area as a float.</returns>
+float calc_area(Matrix* positions, Gauss_Data_Types type);
+

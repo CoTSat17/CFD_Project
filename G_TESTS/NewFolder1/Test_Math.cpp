@@ -116,7 +116,7 @@ TEST(Math_Test, Calc_Volume) {
 
 	// HEX8
 	float points_HEX8[] = {  0,0,0,  1,0,0,  1,1,0,  0,1,0,
-						0,0,1,  1,0,1,  1,1,1,  0,1,1 };
+							 0,0,1,  1,0,1,  1,1,1,  0,1,1 };
 
 	points_matrix = matrix_create(points_HEX8, 3, 8);
 
@@ -140,4 +140,16 @@ TEST(Math_Test, Calc_Volume) {
 	float volume_TET4 = calc_volume(points_matrix, TET4);
 
 	EXPECT_FLOAT_EQ(volume_TET4, 0.16666667);
+}
+
+
+
+TEST(Math_Test, Calc_Area) {
+	float points[] = {  0,0,0,  1,0,0,  1,1,0,  0,1,0};
+
+	Matrix* points_matrix = matrix_create(points, 3, 4);
+
+	float area = calc_area(points_matrix, HEX8);
+
+	EXPECT_FLOAT_EQ(area, 1.0);
 }
