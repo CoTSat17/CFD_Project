@@ -5,12 +5,15 @@
 
 #include <node.h>
 #include <element.h>
+#include <materials.h>
 
 /// <summary>
 /// Reads the imput file and stores the information on the given pointers
 /// </summary>
 /// <param name="nodes">Pointer where the nodes will be stored</param>
-void file_read(Nodes* nodes, Elements* elements);
+/// <param name="elements">Pointer where the elements will be stored</param>
+/// <param name="materials">Pointer where the materials will be stored</param>
+void file_read(Nodes* nodes, Elements* elements, Materials* materials);
 
 
 /// <summary>
@@ -48,3 +51,13 @@ void file_elements_preprocesser(FILE* file, Elements* elements, int count, Eleme
 /// <param name="elements">Struct where the info is saved</param>
 /// <param name="count">Number of Elements</param>
 void file_elements_initial_values(FILE* file, Elements* elements, int count);
+
+
+/// <summary>
+/// From the input file it processes the section of MATERIALS
+/// </summary>
+/// <param name=""></param>
+/// <param name=""></param>
+/// <param name=""></param>
+void file_materials_proprocesser(FILE* file, Materials* materials, int count);
+

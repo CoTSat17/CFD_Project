@@ -11,7 +11,8 @@ extern "C" {
 TEST(FileReader_Test, Init_test) {
 	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
-	file_read(nodes, elements);
+	Materials* materials = (Materials*)malloc(sizeof(Materials));
+	file_read(nodes, elements, materials);
 
 
 
