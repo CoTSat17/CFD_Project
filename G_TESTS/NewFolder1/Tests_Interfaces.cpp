@@ -48,7 +48,7 @@ TEST(Interface_Test, Interfaces_Calculate_Flux) {
 
 
 TEST(Interface_Test, Interface_Update_Element_Value) {
-	float nodes_data[] = { 1.0,	0.0,	0.0,	0.0,
+	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
 							2.0,	1.0,	0.0,	0.0,
 							3.0,	0.0,	1.0,	0.0,
 							4.0,	1.0,	2.0,	0.0 };

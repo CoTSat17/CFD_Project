@@ -18,7 +18,7 @@ Element* element_create(Node** nodes, Element_Types_Avialable element_type, int 
 	element->test_value = 0;
 	element->volume = 0.0;
 	element->material_id = 1;
-
+	element_volume(element);
 	
 
 

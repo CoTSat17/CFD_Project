@@ -40,7 +40,7 @@ extern Element_Type element_type_data[N_ELEMENTS];
 
 typedef struct Element {
 	Node** nodes;
-	float  test_value;
+	double  test_value;
 	Element_Type*    element_type;
 	int    id;
 	float volume;

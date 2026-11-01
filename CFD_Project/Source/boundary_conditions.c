@@ -7,7 +7,7 @@ void boundary_create(Face* face, Boundary* memory_position) {
 
 	new_boundary->face = face;
 	new_boundary->element = face->element;
-	new_boundary->BC_type = DIRICHLET;
+	new_boundary->BC_type = NEUMAN;
 	new_boundary->fixed_value = 0.0;
 	new_boundary->flux = 0.0;
 	face_calc_area(face);
