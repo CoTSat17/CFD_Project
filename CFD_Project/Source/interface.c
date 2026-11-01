@@ -21,9 +21,8 @@ void interface_calculate_flux(Interface* interface) {
 }
 
 
-void interface_update_element_value(Interface* interface, Materials* materials) {
+void interface_update_element_value(Interface* interface, Materials* materials, float dt) {
 	Material* material = materials->material_array[interface->element_1->material_id - 1];
-	float dt = 0.1;
 	float density = material->density;
 	float cp = material->specific_heat;
 	float k = material->thermal_conductivity;
@@ -175,8 +174,8 @@ void interfaces_calculate_flux(Interfaces* interfaces) {
 
 
 
-void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct) {
+void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct, float dt) {
 	for (int i = 0; i < interfaces->n_interfaces; i++) {
-		interface_update_element_value(&interfaces->interface_array[i], materials_struct);
+		interface_update_element_value(&interfaces->interface_array[i], materials_struct, dt);
 	}
 }

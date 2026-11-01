@@ -44,7 +44,9 @@ void interface_calculate_flux(Interface* interface, Materials* materials);
 /// The first element of the interface is stablished as the one matching the normal of the interface
 /// </summary>
 /// <param name="interface">Interface that will be calculated</param>
-void interface_update_element_value(Interface* interface, Materials);
+/// <param name="materials_struct">Pointer to "materias_struct" where the fluid materials are stored</param>
+/// <param name="dt">Time delta in each calculation</param>
+void interface_update_element_value(Interface* interface, Materials materials_struct, float dt);
 
 
 
@@ -88,4 +90,5 @@ void interfaces_calculate_flux(Interfaces* interfaces);
 /// </summary>
 /// <param name="interfaces">Interfaces struct that will be calculated</param>
 /// <param name="materials">Pointer to "materias_struct" where the fluid materials are stored</param>
-void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct);
+/// <param name="dt">Time delta in each calculation</param>
+void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct, float dt);

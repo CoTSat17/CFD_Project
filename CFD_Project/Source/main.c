@@ -22,6 +22,9 @@ int main() {
 
 	float materials_data[] = { 1.0,	1000.0,	2.0,	1.0,	3.0 };
 
+	float solver_data[] = { 0.0, 1.0, 0.001 };
+
+
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
@@ -31,7 +34,10 @@ int main() {
 	elements->elements[0]->test_value = 1.0;
 	
 	Materials* materials_struct = (Materials*)malloc(sizeof(Materials));
-	materials_fill(materials_struct, materials_data, 2);
+	materials_fill(materials_struct, materials_data, 1);
+
+	Solver_Config* solver_struct = (Solver_Config*)malloc(sizeof(Solver_Config));
+	fill_solver_config(solver_struct, solver_data);
 
 
 	for (int i = 0; i < 10; i++) {
@@ -40,7 +46,7 @@ int main() {
 			printf("%f\t", elements->elements[j]->test_value);
 		}
 		interfaces_calculate_flux(interfaces);
-		interfaces_update_element_value(interfaces, materials_struct);
+		interfaces_update_element_value(interfaces, materials_struct, solver_struct->dt);
 	}
 
 	return 0;

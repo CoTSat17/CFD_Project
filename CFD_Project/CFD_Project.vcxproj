@@ -154,6 +154,7 @@
     <ClCompile Include="Source\node.c" />
     <ClCompile Include="Source\point.c" />
     <ClCompile Include="Source\setup_reader.c" />
+    <ClCompile Include="Source\solver_config.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\element.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Headers\math_test.h" />
     <ClInclude Include="Headers\node.h" />
     <ClInclude Include="Headers\point.h" />
+    <ClInclude Include="Headers\solver_config.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="setpup.txt" />

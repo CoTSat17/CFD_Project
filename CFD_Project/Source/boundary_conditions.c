@@ -37,11 +37,18 @@ void boundary_update_element_value(Boundary* boundary) {
 
 
 Boundaries* boundaries_create(Faces* faces) {
+	/// ------------------------------
+	/// OBTAIN A ORDERED FACECES ARRAY
+	/// ------------------------------
+	Faces* sorted_faces = faces_sort(faces);
+
+
+
 	// --------------------
 	// RESERVE MEMORY SPACE
 	// --------------------
 	// Initial memory reservation that overstates the ammount of memory needed.
-	Boundaries* boundaries = (Boundaries*)malloc(sizeof(Boundaries) + faces->n_faces * sizeof(Boundary));
+	Boundaries* boundaries = (Boundaries*)malloc(sizeof(Boundaries) + sorted_faces->n_faces * sizeof(Boundary));
 	if (boundaries == NULL) return NULL;
 
 
@@ -50,16 +57,16 @@ Boundaries* boundaries_create(Faces* faces) {
 
 	Boundary* new_boundary = boundaries->boundary_array;
 
-	for (int i = 0; i < faces->n_faces-1; i++) {
-		if ( ! faces_equal(&faces->face_array[i], &faces->face_array[i + 1])) {
+	for (int i = 0; i < sorted_faces->n_faces-1; i++) {
+		if ( ! faces_equal(&sorted_faces->face_array[i], &sorted_faces->face_array[i + 1])) {
 			// If faces are not equal then it must be a boundary
-			boundary_create(&faces->face_array[i], new_boundary); 
+			boundary_create(&sorted_faces->face_array[i], new_boundary);
 
 			boundaries->n_boundaries++;
 			new_boundary++;
 
-			if (i == faces->n_faces - 2) {
-				boundary_create(&faces->face_array[i+1], new_boundary);
+			if (i == sorted_faces->n_faces - 2) {
+				boundary_create(&sorted_faces->face_array[i+1], new_boundary);
 
 				boundaries->n_boundaries++;
 				new_boundary++;

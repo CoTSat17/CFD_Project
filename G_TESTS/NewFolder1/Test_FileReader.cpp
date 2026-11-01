@@ -12,7 +12,8 @@ TEST(FileReader_Test, Init_test) {
 	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
 	Materials* materials = (Materials*)malloc(sizeof(Materials));
-	file_read(nodes, elements, materials);
+	Solver_Config* solver_config = (Solver_Config*)malloc(sizeof(Solver_Config));
+	file_read(nodes, elements, materials, solver_config);
 
 
 

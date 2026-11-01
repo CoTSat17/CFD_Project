@@ -1,7 +1,7 @@
 #include <file_reader.h>
 
 
-void file_read(Nodes* nodes, Elements* elements) {
+void file_read(Nodes* nodes, Elements* elements, Materials* materials, Solver_Config* solver_config) {
 	///
 	/// The imput file is divided in sections, 
 	/// at the beggining of each section there is
@@ -73,7 +73,20 @@ void file_read(Nodes* nodes, Elements* elements) {
 			printf("PROCESSING INIT_VALUES \n");
 			file_elements_initial_values(file, elements, count);
 		}
+
+
+		/// PROCESS MATERIALS
+		if (strcmp(key, "MATERIALS") == 0) {
+			printf("PROCESSING MATERIALS \n");
+			file_materials_proprocesser(file, materials, count);
+		}
 		
+
+		/// PROCESS SOLVER CONFIG
+		if (strcmp(key, "SOLVER") == 0) {
+			printf("PROCESSING SOLVER CONFIG \n");
+			file_solver_proprocesser(file, solver_config);
+		}
 
 
 	}
@@ -137,6 +150,7 @@ void file_elements_preprocesser(FILE* file, Elements* elements, int count, Eleme
 	/// With the array that stores the file data,
 	/// fill the previously created "elements" struct
 	elements_fill(elements, element_data, count, element_type, nodes);
+	free(element_data);
 
 }
 
@@ -167,5 +181,65 @@ void file_elements_initial_values(FILE* file, Elements* elements, int count) {
 	/// fill the previously created "elements" struct
 
 	elements_init_conditions(elements, init_value_data);
+	free(init_value_data);
 
+}
+
+
+
+void file_materials_proprocesser(FILE* file, Materials* materials, int count) {
+	/// -----------------------------
+	/// RESERVE MEMORY FOR THE ARRAY
+	/// -----------------------------
+	/// For "count" materials is: 5
+	int n_floats = 5 * count;
+	float* material_data = (float*)malloc(n_floats * sizeof(float));
+
+	/// -----------------
+	/// PROCESS EACH LINE
+	/// -----------------
+	/// The data is stored in a array thats used later
+
+	for (int i = 0; i < n_floats; i++) {
+		fscanf_s(file, "%f", &material_data[i]);
+	}
+
+
+	/// -----------------
+	/// FILL MATERIALS 
+	/// -----------------
+	/// With the array that stores the file data,
+	/// fill the previously created "materials" struct
+	materials_fill(materials, material_data, count);
+	free(material_data);
+
+
+}
+
+
+
+
+
+void file_solver_proprocesser(FILE* file, Solver_Config* solver_struct) {
+	/// -----------------------------
+	/// RESERVE MEMORY FOR THE ARRAY
+	/// -----------------------------
+	/// There are 3 values
+	int n_floats = 3;
+	float* solver_data = (float*)malloc(n_floats * sizeof(float));
+
+	/// -----------------
+	/// PROCESS EACH LINE
+	/// -----------------
+	/// The data is stored in a array thats used later
+
+	for (int i = 0; i < n_floats; i++) {
+		fscanf_s(file, "%f", &solver_data[i]);
+	}
+
+	/// -----------------
+	/// FILL SOLVER CONFIG
+	/// -----------------
+	fill_solver_config(solver_struct, solver_data);
+	free(solver_data);
 }

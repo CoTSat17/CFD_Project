@@ -6,6 +6,7 @@
 #include <node.h>
 #include <element.h>
 #include <materials.h>
+#include <solver_config.h>
 
 /// <summary>
 /// Reads the imput file and stores the information on the given pointers
@@ -13,7 +14,8 @@
 /// <param name="nodes">Pointer where the nodes will be stored</param>
 /// <param name="elements">Pointer where the elements will be stored</param>
 /// <param name="materials">Pointer where the materials will be stored</param>
-void file_read(Nodes* nodes, Elements* elements, Materials* materials);
+/// <param name="solver_config">Pointer where the solver config will be stored</param>
+void file_read(Nodes* nodes, Elements* elements, Materials* materials, Solver_Config* solver_config);
 
 
 /// <summary>
@@ -55,9 +57,21 @@ void file_elements_initial_values(FILE* file, Elements* elements, int count);
 
 /// <summary>
 /// From the input file it processes the section of MATERIALS
+/// 
+/// <para> Calls "materials_fill" to save the info of the materials</para> 
 /// </summary>
-/// <param name=""></param>
-/// <param name=""></param>
-/// <param name=""></param>
+/// <param name="file">File that contains the information</param>
+/// <param name="materials">Struct where the info is saved</param>
+/// <param name="count">Number of materials</param>
 void file_materials_proprocesser(FILE* file, Materials* materials, int count);
+
+
+/// <summary>
+/// From the input file it processes the section of SOLVER
+/// 
+/// <para> Calls "fill_solver_config" to save the info</para> 
+/// </summary>
+/// <param name="file">File that contains the information</param>
+/// <param name="solver_struct">Struct where the info is saved</param>
+void file_solver_proprocesser(FILE* file, Solver_Config* solver_struct);
 

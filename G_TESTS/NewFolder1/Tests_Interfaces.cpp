@@ -4,6 +4,7 @@
 
 extern "C" {
 #include <interface.h>
+#include <solver_config.h>
 }
 
 
@@ -86,6 +87,7 @@ TEST(Interface_Test, Interface_Update_Element_Value) {
 
 	float material_data[] = { 1.0, 1000.0, 2.0, 1.0, 3.0 };
 
+	float solver_data[] = { 0.0, 1.0, 0.001 };
 
 	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
 	nodes_fill(nodes, nodes_data, 4);
@@ -96,6 +98,10 @@ TEST(Interface_Test, Interface_Update_Element_Value) {
 
 	Materials* materials_struct = (Materials*)malloc(sizeof(Materials));
 	materials_fill(materials_struct, material_data, 1);
+
+	Solver_Config* solver_struct = (Solver_Config*)malloc(sizeof(Solver_Config));
+	fill_solver_config(solver_struct, solver_data);
+
 
 	elements->elements[0]->test_value = 100.0;
 
@@ -108,7 +114,7 @@ TEST(Interface_Test, Interface_Update_Element_Value) {
 	interfaces_calculate_flux(interfaces);
 
 
-	interfaces_update_element_value(interfaces, materials_struct);
+	interfaces_update_element_value(interfaces, materials_struct, solver_struct->dt);
 
 
 }
