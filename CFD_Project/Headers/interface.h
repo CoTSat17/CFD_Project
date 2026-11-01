@@ -1,7 +1,7 @@
 #pragma once
 #include "element.h"
 #include "faces.h"
-
+#include <materials.h>
 
 
 /// <summary>
@@ -34,7 +34,8 @@ void interface_create(Element* element_1, Element* element_2, Face* face, Interf
 /// <para>The flux is calculates by "central diferencing"</para>
 /// </summary>
 /// <param name="interface">Interface where the flux will be calculated</param>
-void interface_calculate_flux(Interface* interface);
+/// <param name="materials">Pointer to "materias_struct" where the fluid materials are stored</param>
+void interface_calculate_flux(Interface* interface, Materials* materials);
 
 
 /// <summary>
@@ -43,7 +44,7 @@ void interface_calculate_flux(Interface* interface);
 /// The first element of the interface is stablished as the one matching the normal of the interface
 /// </summary>
 /// <param name="interface">Interface that will be calculated</param>
-void interface_update_element_value(Interface* interface);
+void interface_update_element_value(Interface* interface, Materials);
 
 
 
@@ -86,4 +87,5 @@ void interfaces_calculate_flux(Interfaces* interfaces);
 /// The first element of the interface is stablished as the one matching the normal of the interface
 /// </summary>
 /// <param name="interfaces">Interfaces struct that will be calculated</param>
-void interfaces_update_element_value(Interfaces* interfaces);
+/// <param name="materials">Pointer to "materias_struct" where the fluid materials are stored</param>
+void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct);

@@ -19,6 +19,9 @@ int main() {
 						 7,	9,	10,	8
 						};
 
+
+	float materials_data[] = { 1.0,	1000.0,	2.0,	1.0,	3.0 };
+
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
@@ -27,6 +30,9 @@ int main() {
 	Interfaces* interfaces = interfaces_create(faces);
 	elements->elements[0]->test_value = 1.0;
 	
+	Materials* materials_struct = (Materials*)malloc(sizeof(Materials));
+	materials_fill(materials_struct, materials_data, 2);
+
 
 	for (int i = 0; i < 10; i++) {
 		printf("\n\n -- TIME STEP -- %d\n", i + 1);
@@ -34,7 +40,7 @@ int main() {
 			printf("%f\t", elements->elements[j]->test_value);
 		}
 		interfaces_calculate_flux(interfaces);
-		interfaces_update_element_value(interfaces);
+		interfaces_update_element_value(interfaces, materials_struct);
 	}
 
 	return 0;

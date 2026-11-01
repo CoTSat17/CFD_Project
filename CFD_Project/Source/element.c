@@ -17,7 +17,7 @@ Element* element_create(Node** nodes, Element_Types_Avialable element_type, int 
 	element->id = id;
 	element->test_value = 0;
 	element->volume = 0.0;
-
+	element->material_id = 1;
 
 	
 
@@ -200,7 +200,7 @@ void elements_fill(Elements* elements_struct, int* elements_data, int n_elements
 
 
 	// -----------------------------
-	// Create the arrray of elements
+	// Create the arrray of pointes to elements
 	// -----------------------------
 
 	// Allocate enought space

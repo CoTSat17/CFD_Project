@@ -44,10 +44,13 @@ typedef struct Element {
 	Element_Type*    element_type;
 	int    id;
 	float volume;
+	int material_id;
 }Element;
 
 /// <summary>
 /// Create a new element
+/// 
+/// <para> By default the material_id = 1</para>
 /// </summary>
 /// <param name="nodes">Array of pointer to the nodes that form the element</param>
 /// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
