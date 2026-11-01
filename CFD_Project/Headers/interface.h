@@ -10,7 +10,6 @@
 /// </summary>
 typedef struct Interface {
 	float flux;			///< Flux value between the elements
-	float area;			///< Area of the interface (length if 2D)
 	Element* element_1; ///< Pointer to the "Element" struct that shares normal with the interface
 	Element* element_2; ///< Pointer to the "Element" struct that has it's normal in the opposite direction 
 	Face* face;			///< Face that forms the interface
@@ -50,10 +49,8 @@ void interface_update_element_value(Interface* interface, Materials materials_st
 
 
 
-Node* interface_search_node_by_id(Interface* interface, int node_id);
 
 
-void interface_calculate_area(Interface* interface_struct);
 
 
 
@@ -64,14 +61,6 @@ typedef struct Interfaces {
 	Interface* interface_array; // Array with all the element interfaces
 	int n_interfaces;			// Number of all the interfaces stored
 }Interfaces;	
-
-
-/// <summary>
-/// Creates the interfaces of the elements and returns a pointer
-/// </summary>
-/// <param name="faces">Faces that form the interface</param>
-/// <returns>Pointer to the struct that stores the interfaces</returns>
-Interfaces* interfaces_create(Faces* faces);
 
 
 /// <summary>

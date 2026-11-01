@@ -3,6 +3,8 @@
 #include <element.h>
 #include <string.h>
 
+typedef struct Interfaces Interfaces;
+typedef struct Boundaries Boundaries;
 
 /// <summary>
 /// Face of a element of the mesh
@@ -12,6 +14,7 @@ typedef struct Face {
 	int* nodes_id_sorted;
 	Element* element;	///< Element that has that face
 	int face_id;
+	float area;			///< Area of the face
 }Face;
 
 
@@ -30,6 +33,25 @@ int faces_equal(Face* face_1, Face* face_2);
 /// <param name="face">Face struct where the center point will be calculated</param>
 /// <returns>Point: where the center is located</returns>
 Point face_center(Face* face);
+
+
+
+/// <summary>
+/// Searches for the Node struct with the corresponding id
+/// </summary>
+/// <param name="face">Face struct where the id is</param>
+/// <param name="node_id">Id of the node</param>
+/// <returns>Pointer to the node</returns>
+Node* face_search_node_by_id(Face* face, int node_id);
+
+
+
+/// <summary>
+/// Calculates the area of the face
+/// The value is stored in the struct
+/// </summary>
+/// <param name="face">Face struct where the area will be calculated</param>
+void face_calc_area(Face* face);
 
 
 /// <summary>
@@ -76,3 +98,8 @@ Faces* faces_sort(Faces* faces);
 
 Face* faces_search_id(Faces* faces_struct, int face_id);
 
+
+
+
+
+void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** boundaries_struct);

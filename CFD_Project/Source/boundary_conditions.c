@@ -10,6 +10,7 @@ void boundary_create(Face* face, Boundary* memory_position) {
 	new_boundary->BC_type = DIRICHLET;
 	new_boundary->fixed_value = 0.0;
 	new_boundary->flux = 0.0;
+	face_calc_area(face);
 }
 
 
@@ -28,69 +29,21 @@ void boundary_calculate_flux(Boundary* boundary) {
 
 
 
-void boundary_update_element_value(Boundary* boundary) {
-	boundary->element->test_value += 0.25 / (1 * 1) * (1 * (boundary->flux));
+void boundary_update_element_value(Boundary* boundary, Materials* materials_struct, float dt) {
+
+	Material* material = materials_struct->material_array[boundary->element->material_id - 1];
+	float density = material->density;
+	float cp = material->specific_heat;
+	float k = material->thermal_conductivity;
+
+	boundary->element->test_value += dt / (density * cp * boundary->element->volume) * (k * boundary->flux * boundary->face->area);
+
 }
 
 
 
 
 
-Boundaries* boundaries_create(Faces* faces) {
-	/// ------------------------------
-	/// OBTAIN A ORDERED FACECES ARRAY
-	/// ------------------------------
-	Faces* sorted_faces = faces_sort(faces);
-
-
-
-	// --------------------
-	// RESERVE MEMORY SPACE
-	// --------------------
-	// Initial memory reservation that overstates the ammount of memory needed.
-	Boundaries* boundaries = (Boundaries*)malloc(sizeof(Boundaries) + sorted_faces->n_faces * sizeof(Boundary));
-	if (boundaries == NULL) return NULL;
-
-
-	boundaries->boundary_array = (Boundary*)(boundaries + 1);
-	boundaries->n_boundaries = 0;
-
-	Boundary* new_boundary = boundaries->boundary_array;
-
-	for (int i = 0; i < sorted_faces->n_faces-1; i++) {
-		if ( ! faces_equal(&sorted_faces->face_array[i], &sorted_faces->face_array[i + 1])) {
-			// If faces are not equal then it must be a boundary
-			boundary_create(&sorted_faces->face_array[i], new_boundary);
-
-			boundaries->n_boundaries++;
-			new_boundary++;
-
-			if (i == sorted_faces->n_faces - 2) {
-				boundary_create(&sorted_faces->face_array[i+1], new_boundary);
-
-				boundaries->n_boundaries++;
-				new_boundary++;
-			}
-
-		}
-
-		else {
-			// If the face is equal to the next then the next one can be skipped
-			i++;
-		}
-	}
-
-
-
-
-	// -----------------
-	// ADJUST THE MEMORY 
-	// -----------------
-	Boundary* boundary_adjusted = realloc(boundaries, sizeof(Boundary) + boundaries->n_boundaries * sizeof(Boundary));
-	if (boundary_adjusted == NULL) return NULL;
-
-	return boundary_adjusted;
-}
 
 
 
@@ -105,8 +58,8 @@ void boundaries_calculate_flux(Boundaries* boundaries) {
 
 
 
-void boundaries_update_element_value(Boundaries* boundaries) {
+void boundaries_update_element_value(Boundaries* boundaries, Materials* materials_struct, float dt) {
 	for (int i = 0; i < boundaries->n_boundaries; i++) {
-		boundary_update_element_value(&boundaries->boundary_array[i]);
+		boundary_update_element_value(&boundaries->boundary_array[i], materials_struct, dt);
 	}
 }

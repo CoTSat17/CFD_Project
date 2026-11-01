@@ -1,5 +1,6 @@
 #pragma once
 #include "faces.h"
+#include "materials.h"
 
 typedef enum 
 {
@@ -47,7 +48,9 @@ void boundary_calculate_flux(Boundary* boundary);
 /// Calculates the new element value due to the effects of the BC
 /// </summary>
 /// <param name="boundary">Boundary to be implemented</param>
-void boundary_update_element_value(Boundary* boundary);
+/// <param name="materials_struct">Pointer to "materias_struct" where the fluid materials are stored</param>
+/// <param name="dt">Time delta in each calculation</param>
+void boundary_update_element_value(Boundary* boundary, Materials* materials_struct, float dt);
 
 
 typedef struct Boundaries {
@@ -55,12 +58,6 @@ typedef struct Boundaries {
 	int n_boundaries;
 }Boundaries;
 
-/// <summary>
-/// Creates the boundaries of the mesh
-/// </summary>
-/// <param name="faces">Faces that form the mehs</param>
-/// <returns>Pointer to the struct that stores the Boundaries</returns>
-Boundaries* boundaries_create(Faces* faces);
 
 
 
@@ -77,4 +74,6 @@ void boundaries_calculate_flux(Boundaries* boundaries);
 /// Calculates the new element value due to the effects of the BC
 /// </summary>
 /// <param name="boundary">Group of boundary to be implemented</param>
-void boundaries_update_element_value(Boundaries* boundaries);
+/// <param name="materials_struct">Pointer to "materias_struct" where the fluid materials are stored</param>
+/// <param name="dt">Time delta in each calculation</param>
+void boundaries_update_element_value(Boundaries* boundaries, Materials* materials_struct, float dt);

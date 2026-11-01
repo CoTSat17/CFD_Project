@@ -197,3 +197,73 @@ TEST(Face_Test, Faces_Search_Id) {
 	EXPECT_EQ(faces_search_id(faces, 1)->face_id, 1);
 	EXPECT_EQ(faces_search_id(faces, 2)->face_id, 2);
 }
+
+
+
+
+
+
+TEST(Face_Test, Face_Calc_Area) {
+	float nodes_data[] = {
+		1, 0, 0, 0,  // Nodo 1
+		2, 1, 0, 0,  // Nodo 2
+		3, 1, 1, 0,  // Nodo 3
+		4, 0, 1, 0,  // Nodo 4
+		5, 0, 0, 1,  // Nodo 5
+		6, 1, 0, 1,  // Nodo 6
+		7, 1, 1, 1,  // Nodo 7
+		8, 0, 1, 1,  // Nodo 8
+		9, 2, 0, 0,  // Nodo 9
+		10, 2, 1, 0,  // Nodo 10
+		11, 2, 0, 1,  // Nodo 11
+		12, 2, 1, 1   // Nodo 12
+	};
+
+	int elements_data[] = {
+		1, 1, 2, 3, 4, 5, 6, 7, 8, // Element 1
+		2, 2, 9,10, 3, 6,11, 12, 7  // Element 2
+	};
+
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 12);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+	elements_fill(elements, elements_data, 2, ELEMENT_HEXA, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+	face_calc_area(&faces->face_array[0]);
+	EXPECT_EQ(faces->face_array[0].area, 1.0);
+
+}
+
+
+
+TEST(Face_Test, Faces_Clasify) {
+	float nodes_data[] = { 1.0,	0.0,	0.0,	0.0,
+						2.0,	1.0,	0.0,	0.0,
+						3.0,	0.0,	1.0,	0.0,
+						4.0,	1.0,	1.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+
+	Faces* faces = faces_create_from_elements(elements);
+
+	Interfaces* interfaces = NULL;
+	Boundaries* boundaries = NULL;
+	faces_clasify(faces, &interfaces, &boundaries);
+
+
+
+
+}

@@ -28,9 +28,11 @@ int main() {
 	Nodes* nodes = nodes_create(nodes_position, sizeof(nodes_position) / sizeof(nodes_position[0]));
 	Elements* elements = elements_create(node_index, sizeof(node_index) / sizeof(node_index[0]), ELEMENT_QUAD, nodes);
 	Faces* faces = faces_create_from_elements(elements);
-	faces_sort(faces);
 
-	Interfaces* interfaces = interfaces_create(faces);
+	Interfaces* interfaces = NULL;
+	Boundaries* boundaries = NULL;
+	faces_clasify(faces, &interfaces, &boundaries);
+
 	elements->elements[0]->test_value = 1.0;
 	
 	Materials* materials_struct = (Materials*)malloc(sizeof(Materials));
