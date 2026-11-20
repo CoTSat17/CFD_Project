@@ -16,12 +16,14 @@ A personal finite-volume solver for heat conduction (and, in the longer term, CF
 
 ```
 CFD_Project/
-├── CFD_Project/      # Solver source code (C)
+├── CFD_Project/
+│   ├── Headers/      # Header files (.h)
+│   └── Source/       # Solver source code (.c)
 ├── G_TESTS/          # Google Test unit tests (C++)
 └── CFD_Project.slnx  # Visual Studio solution
 ```
 
-Main modules (in `CFD_Project/`):
+Main modules (headers in `CFD_Project/Headers/`, implementation in `CFD_Project/Source/`):
 
 | Module | Purpose |
 |---|---|
@@ -56,7 +58,7 @@ The project is developed with **Visual Studio** on Windows.
 
 ## Tests
 
-Unit tests live in `G_TESTS/` and use Google Test. To run them, build and run the test project from the same Visual Studio solution.
+Unit tests live in `G_TESTS/` and use Google Test. Current tests cover points, nodes and elements. To run them, build and run the test project from the same Visual Studio solution.
 
 ## Roadmap
 
