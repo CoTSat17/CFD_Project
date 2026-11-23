@@ -30,7 +30,7 @@ Node* node_create(float x, float y, float z, int id);
 /// Free the memory of the node, also frees the memory of the corresponding point
 /// </summary>
 /// <param name="node">Node that will be destroid</param>
-void node_destroy(Node* node);
+void node_destroy(Node** node);
 
 
 
@@ -64,7 +64,8 @@ Nodes* nodes_create(float* nodes_position, int size_array);
 /// <param name="nodes_struct">Struct to be filled</param>
 /// <param name="nodes_data">Array with the structure: [ id, x, y, z, ...]</param>
 /// <param name="n_nodes">Number of nodes</param>
-void nodes_fill(Nodes* nodes_struct, float* nodes_data, int n_nodes);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int nodes_fill(Nodes* nodes_struct, float* nodes_data, int n_nodes);
 
 
 
@@ -72,7 +73,16 @@ void nodes_fill(Nodes* nodes_struct, float* nodes_data, int n_nodes);
 /// Destroys and frees the memory of all the "nodes" struct and all the "node" in it
 /// </summary>
 /// <param name="nodes">Nodes struct to be deleted</param>
-void nodes_destroy(Nodes* nodes);
+void nodes_destroy(Nodes** nodes);
+
+
+/// <summary>
+/// Clears a nodes struct
+/// </summary>
+/// <param name="nodes_struct">nodes_struct to be cleared</param>
+void nodes_clear(Nodes* nodes_struct);
+
+
 
 /// <summary>
 /// Searches the nodes for the corresponding ID node

@@ -47,46 +47,110 @@ TEST(Element_Test, Element_Struct) {
 	EXPECT_EQ(element.id, id);
 
 
-	node_destroy(node_1);
-	node_destroy(node_2);
-	node_destroy(node_3);
+	node_destroy(&node_1);
+	node_destroy(&node_2);
+	node_destroy(&node_3);
 	free(nodes);
 }
 
 
 
 TEST(Element_Test, Element_Create) {
-	int n_nodes = 3;
 	int id = 1;
 
-	Node** nodes = (Node**)malloc(sizeof(Node*) * n_nodes);
+	float node_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
 
-	Node* node_1 = node_create(1, 2, 3, 0);
-	Node* node_2 = node_create(1, 2, 3, 1);
-	Node* node_3 = node_create(1, 2, 3, 2);
-	nodes[0] = node_1;
-	nodes[1] = node_2;
-	nodes[2] = node_3;
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	if (nodes == NULL) return;
 
-	Element* element = element_create(nodes, ELEMENT_TRI, id);
+	nodes_fill(nodes, node_data, 3);
+
+	Element* element = element_create(nodes->nodes, ELEMENT_TRI, id);
+	EXPECT_NE(element, nullptr);
 
 
-	for (int i = 0; i < n_nodes; i++) {
-		EXPECT_EQ(element->nodes[i]->id, i);
+	/// -----
+	/// TESTS 
+	/// -----
+	for (int i = 0; i < 3; i++) {
+		EXPECT_EQ(element->nodes[i]->id, i+1);
 	}
 
-	EXPECT_EQ(element->element_type->n_nodes, n_nodes);
+	EXPECT_EQ(element->element_type->n_nodes, 3);
 	EXPECT_EQ(element->element_type->n_faces, 3);
 	EXPECT_EQ(element->test_value, 0);
+	EXPECT_EQ(element->volume, 0.5);
 	EXPECT_EQ(element->id, id);
 
-	element_destroy(element);
-	node_destroy(node_1);
-	node_destroy(node_2);
-	node_destroy(node_3);
-	free(nodes);
+	element_destroy(&element);
+	nodes_destroy(&nodes);
+	EXPECT_EQ(element, nullptr);
+	EXPECT_EQ(nodes, nullptr);
+
 
 }
+
+
+
+
+
+TEST(Element_Test, Element_Create_ErrorHandeling) {
+
+
+	float node_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	if (nodes == NULL) return;
+
+	nodes_fill(nodes, node_data, 3);
+
+	Element* element_1 = element_create(NULL, ELEMENT_TRI, 1); // NULL NODES
+	Element* element_2 = element_create(nodes->nodes, ELEMENT_TRI, -1); // Incorrect id
+
+	nodes->nodes[1] = NULL;
+	Element* element_3 = element_create(nodes->nodes, ELEMENT_TRI, 1);// NULL node
+
+
+	/// -----
+	/// TESTS 
+	/// -----
+	EXPECT_EQ(element_1, nullptr);
+	EXPECT_EQ(element_2, nullptr);
+	EXPECT_EQ(element_3, nullptr);
+
+
+
+}
+
+TEST(Element_Test, Element_Destroy) {
+	int id = 1;
+
+	float node_data[] = { 1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	if (nodes == NULL) return;
+
+	nodes_fill(nodes, node_data, 3);
+
+	Element* element = element_create(nodes->nodes, ELEMENT_TRI, id);
+	EXPECT_NE(element, nullptr);
+
+
+	element_destroy(&element);
+	EXPECT_EQ(element, nullptr);
+
+}
+
+
+
+
+
 
 
 TEST(Element_Test, Element_Dist) {
@@ -121,21 +185,25 @@ TEST(Element_Test, Element_Dist) {
 
 
 TEST(Element_Test, Element_Center) {
-	int n_nodes = 3;
-	int id = 1;
 
-	Node** nodes = (Node**)malloc(sizeof(Node*) * n_nodes);
+	float node_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
 
-	Node* node_1 = node_create(0, 0, 0, 0);
-	Node* node_2 = node_create(1, 0, 0, 1);
-	Node* node_3 = node_create(0, 1, 0, 2);
-	nodes[0] = node_1;
-	nodes[1] = node_2;
-	nodes[2] = node_3;
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	if (nodes == NULL) return;
 
-	Element* element = element_create(nodes, ELEMENT_TRI, id);
+	nodes_fill(nodes, node_data, 3);
 
-	Point center = element_center(element);
+	Element* element = element_create(nodes->nodes, ELEMENT_TRI, 1);
+	EXPECT_NE(element, nullptr);
+
+	Point center; 
+	int function_answer = element_center(element, &center);
+
+
+	// TEST
+	EXPECT_EQ(function_answer, 0);
 
 	EXPECT_NEAR(center.x, 0.3333, 0.001);
 	EXPECT_NEAR(center.y, 0.3333, 0.001);
@@ -145,6 +213,36 @@ TEST(Element_Test, Element_Center) {
 
 }
 
+
+TEST(Element_Test, Element_Center_ErrorHandeling) {
+
+	float node_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	0.0,	1.0,	0.0,
+							3.0,	1.0,	0.0,	0.0 };
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	if (nodes == NULL) return;
+
+	nodes_fill(nodes, node_data, 3);
+
+	Element* element = element_create(nodes->nodes, ELEMENT_TRI, 1);
+	EXPECT_NE(element, nullptr);
+
+	Point center;
+	int function_answer_1 = element_center(NULL, &center);
+	int function_answer_2 = element_center(element, NULL);
+	element->nodes[1] = NULL;
+	int function_answer_3 = element_center(element, &center);
+
+
+	// TEST
+	EXPECT_EQ(function_answer_1, 1);
+	EXPECT_EQ(function_answer_2, 1);
+	EXPECT_EQ(function_answer_3, 1);
+
+
+
+}
 
 
 
@@ -161,8 +259,10 @@ TEST(Element_Test, Elements_Create) {
 
 
 	Nodes* nodes = nodes_create(positions, 12);
+	EXPECT_NE(nodes, nullptr);
 
 	Elements* elements = elements_create(element_index, 6, ELEMENT_TRI, nodes);
+	EXPECT_NE(elements, nullptr);
 
 
 	// Test size
@@ -177,7 +277,66 @@ TEST(Element_Test, Elements_Create) {
 
 
 
+TEST(Element_Test, Elements_Create_ErrorHandeling) {
+	float positions[] = {	0.0,	0.0,	0.0,
+							1.0,	0.0,	0.0,
+							0.0,	1.0,	0.0,
+							1.0,	1.0,	0.0 };
+
+	int element_index[] = { 1,		2,		3,
+							2,		3,		4 };
+
+
+	Nodes* nodes = nodes_create(positions, 12);
+	EXPECT_NE(nodes, nullptr);
+
+	Elements* elements_1 = elements_create(NULL, 6, ELEMENT_TRI, nodes);
+	EXPECT_EQ(elements_1, nullptr);
+	
+	Elements* elements_2 = elements_create(element_index, -6, ELEMENT_TRI, nodes);
+	EXPECT_EQ(elements_2, nullptr);
+
+	Elements* elements_3 = elements_create(element_index, 6, ELEMENT_TRI, NULL);
+	EXPECT_EQ(elements_3, nullptr);
+
+	Elements* elements_4 = elements_create(element_index, 5, ELEMENT_TRI, nodes);
+	EXPECT_EQ(elements_4, nullptr);
+
+}
+
+
 TEST(Element_Test, Elements_Fill) {
+	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	1.0,	0.0 };
+
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
+
+
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+	EXPECT_NE(nodes, nullptr);
+
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+	EXPECT_NE(elements, nullptr);
+
+
+	// Test size
+	EXPECT_EQ(elements->n_elements, 2);
+
+	// Test elements
+	EXPECT_EQ(elements->elements[0]->id, 1.0);
+	EXPECT_EQ(elements->elements[0]->nodes[1]->id, 2);
+
+
+}
+
+
+TEST(Element_Test, Elements_Fill_ErrorHandeling) {
 	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
 							2.0,	1.0,	0.0,	0.0,
 							3.0,	0.0,	1.0,	0.0,
@@ -192,43 +351,53 @@ TEST(Element_Test, Elements_Fill) {
 
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
 
-	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+	int function_return = elements_fill(NULL, elements_data, 2, ELEMENT_TRI, nodes);
+	EXPECT_EQ(function_return, 1);
 
+	function_return = elements_fill(elements, NULL, 2, ELEMENT_TRI, nodes);
+	EXPECT_EQ(function_return, 1);
 
-	// Test size
-	EXPECT_EQ(elements->n_elements, 2);
+	function_return = elements_fill(elements, elements_data, -2, ELEMENT_TRI, nodes);
+	EXPECT_EQ(function_return, 1);
 
-	// Test elements
-	EXPECT_EQ(elements->elements[0]->id, 1.0);
-	EXPECT_EQ(elements->elements[0]->nodes[1]->id, 2);
+	int elements_data_2[] = { 1,	1,	2,	3,
+							2,	2,	3,	88 };
 
-
+	function_return = elements_fill(elements, elements_data_2, 2, ELEMENT_TRI, nodes);
+	EXPECT_EQ(function_return, 1);
+	EXPECT_EQ(elements->n_elements, 0);
+	EXPECT_EQ(elements->elements, nullptr);
 }
 
 
-
 TEST(Element_Test, Element_dist_To_Face) {
-	float positions[] = {	0.0,	0.0,	0.0,
-							1.0,	0.0,	0.0,
-							0.0,	2.0,	0.0,
-							1.0,	2.0,	0.0 };
+	float nodes_data[] = {	1.0,	0.0,	0.0,	0.0,
+							2.0,	1.0,	0.0,	0.0,
+							3.0,	0.0,	1.0,	0.0,
+							4.0,	1.0,	1.0,	0.0 };
 
-	int element_index[] = { 1,	2,	4,	3};
+	int elements_data[] = { 1,	1,	2,	3,
+							2,	2,	3,	4 };
 
 
-	Nodes* nodes = nodes_create(positions, 12);
+	Nodes* nodes = (Nodes*)malloc(sizeof(Nodes));
+	nodes_fill(nodes, nodes_data, 4);
+	EXPECT_NE(nodes, nullptr);
 
-	Elements* elements = elements_create(element_index, 6, ELEMENT_QUAD, nodes);
+	Elements* elements = (Elements*)malloc(sizeof(Elements));
+
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
+	EXPECT_NE(elements, nullptr);
 
 	Faces* faces = faces_create_from_elements(elements);
 
 
 
 	float distance = element_dist_to_face(elements->elements[0], &faces->face_array[0]);
-	EXPECT_EQ(distance, 1.0);
+	EXPECT_FLOAT_EQ(distance, 0.372678);
 
 	distance = element_dist_to_face(elements->elements[0], &faces->face_array[1]);
-	EXPECT_EQ(distance, 0.5);
+	EXPECT_FLOAT_EQ(distance, 0.23570225);
 
 
 
@@ -285,7 +454,7 @@ TEST(Element_Test, Elements_Init_Conditions) {
 	nodes_fill(nodes, nodes_data, 4);
 
 	Elements* elements = (Elements*)malloc(sizeof(Elements));
-	elements_fill(elements, elements_data, 2, ELEMENT_QUAD, nodes);
+	elements_fill(elements, elements_data, 2, ELEMENT_TRI, nodes);
 
 
 	elements_init_conditions(elements, init_values);

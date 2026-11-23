@@ -62,7 +62,7 @@ Element* element_create(Node** nodes, Element_Types_Avialable element_type, int 
 /// Frees the memory allocated to the element
 /// </summary>
 /// <param name="element">Element to desrtoy</param>
-void element_destroy(Element* element);
+void element_destroy(Element** element);
 
 
 
@@ -88,8 +88,9 @@ float element_dist_to_face(Element* element, Face* face);
 /// #TODO: For now it does a vertex average so it induces error at deformed elements
 /// </summary>
 /// <param name="element_1">Element to where the position is calculated</param>
-/// <returns>Point: Position of the center  </returns>
-Point element_center(Element* element_1);
+/// <param name="center_point">Pointer to "point" that stores the center</param>
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int element_center(Element* element_1, Point* center_point);
 
 
 
@@ -97,8 +98,8 @@ Point element_center(Element* element_1);
 /// Calculates the volume of a given element.
 /// </summary>
 /// <param name="element_struct">Pointer to the Element structure for which the volume is calculated.</param>
-/// <returns>The volume of the element as a float.</returns>
-void element_volume(Element* element_struct);
+/// <returns>0: OK  ||  1: ERROR</returns>
+int element_volume(Element* element_struct);
 
 
 
@@ -117,7 +118,7 @@ typedef struct Elements {
 /// <param name="size_array">Number of values that are in the "nodes_index" array</param>
 /// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
 /// <param name="nodes_list">Nodes list with the created nodes</param>
-/// <returns>Returns a "elements" struct with all the new elemnts and the quantity</returns>
+/// <returns>Returns a "elements" struct with all the new elemnts and the quantity  || NULL: if error detected</returns>
 Elements* elements_create(int* nodes_index, int size_array, Element_Types_Avialable element_type, Nodes* nodes_list);
 
 
@@ -132,7 +133,8 @@ Elements* elements_create(int* nodes_index, int size_array, Element_Types_Aviala
 /// <param name="n_elements">Number of values that are in the "nodes_index" array</param>
 /// <param name="element_type">Type of element: ELEMENT_TRI,ELEMENT_QUAD & ELEMENT_HEXA </param>
 /// <param name="nodes_list">Nodes struct that contains nodes info</param>
-void elements_fill(Elements* elements_struct,int* elements_data, int n_elements, Element_Types_Avialable element_type, Nodes* nodes_list);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int elements_fill(Elements* elements_struct,int* elements_data, int n_elements, Element_Types_Avialable element_type, Nodes* nodes_list);
 
 
 /// <summary>
@@ -140,10 +142,22 @@ void elements_fill(Elements* elements_struct,int* elements_data, int n_elements,
 /// </summary>
 /// <param name="elements_struct">Struct where elements are stored</param>
 /// <param name="init_values">Array of initial values</param>
-void elements_init_conditions(Elements* elements_struct, float* init_values);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int elements_init_conditions(Elements* elements_struct, float* init_values);
 
 
+/// <summary>
+/// Destroys and frees the memory of all the "elements" struct and all the "element" in it
+/// </summary>
+/// <param name="elements_struct">Elements struct to be deleted</param>
+void elements_destroy(Elements** elements_struct);
 
+
+/// <summary>
+/// Clears a elements struct
+/// </summary>
+/// <param name="elements_struct">elements_struct to be cleared</param>
+void elements_clear(Elements* elements_struct);
 
 
 /// <summary>
