@@ -167,7 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="NewFolder1\Tests_Faces.cpp" />
+    <ClCompile Include="NewFolder1\Test_Faces.cpp" />
     <ClCompile Include="NewFolder1\Tests_Interfaces.cpp" />
     <ClCompile Include="NewFolder1\Test_Boundary.cpp" />
     <ClCompile Include="NewFolder1\Test_FileReader.cpp" />

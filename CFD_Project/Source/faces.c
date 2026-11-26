@@ -3,12 +3,19 @@
 #include <boundary_conditions.h>
 
 int compare_descending(const void* a, const void* b);
-int sort_descending_faces_nodes(const void* a, const void* b);
+int sort_face_pointers(const void* a, const void* b);
 
 
 
 int faces_equal(Face* face_1, Face* face_2) {
-	for (int i = 0; i < face_1->element->element_type->node_per_face; i++) {
+	// Check if the faces have different ammount of nodes
+	//if they have different ammount they are different
+	int face_1_nodes = face_1->element->element_type->node_per_face;
+	int face_2_nodes = face_2->element->element_type->node_per_face;
+
+	if (face_1_nodes != face_2_nodes) return 0;
+
+	for (int i = 0; i < face_1_nodes; i++) {
 		if (face_1->nodes_id_sorted[i] != face_2->nodes_id_sorted[i]) return 0;
 	}
 
@@ -18,37 +25,57 @@ int faces_equal(Face* face_1, Face* face_2) {
 
 
 
-Point face_center(Face* face) {
-	Point center_point = { 0 , 0 , 0 };
+int face_center(Face* face, Point* center_point) {
+	// ------------
+	// CHECK INPUT
+	// ------------
+	if (face == NULL || center_point == NULL) return 1;
 
-	// For each node find its position
-	for (int i = 0; i < face->element->element_type->node_per_face; i++) {
 
-		/// Find the point inside the element data
-		for (int j = 0; j < face->element->element_type->n_nodes; j++) {
-			if (face->element->nodes[j]->id == face->nodes_id[i]) {
-				Point position = face->element->nodes[j]->position;
+	// ------------
+	// INITIALIZE
+	// ------------
+	*center_point = (Point){ 0 , 0 , 0 };
+	int node_per_face = face->element->element_type->node_per_face;
+	int node_found = 0; // 1 IF FOUND || 0 IF NOT FOUND
 
-				center_point.x += position.x;
-				center_point.y += position.y;
-				center_point.z += position.z;
-			}
+	// ------------
+	// FIND EACH NODE
+	// ------------
+	for (int i = 0; i < node_per_face; i++) {
+		// Search for the node
+		Node* node = face_search_node_by_id(face, face->nodes_id[i]);
+		// If not found reset point and return 1
+		if (node == NULL) {
+			*center_point = (Point){ 0 , 0 , 0 };
+			return 1;
 		}
 
+		// If found add values
+		center_point->x += node->position.x;
+		center_point->y += node->position.y;
+		center_point->z += node->position.z;
+
 	}
-
 	// Calculate the average
-	center_point.x = center_point.x / face->element->element_type->node_per_face;
-	center_point.y = center_point.y / face->element->element_type->node_per_face;
-	center_point.z = center_point.z / face->element->element_type->node_per_face;
+	center_point->x = center_point->x / node_per_face;
+	center_point->y = center_point->y / node_per_face;
+	center_point->z = center_point->z / node_per_face;
 
-	return center_point;
+	return 0;
 }
 
 
 
 
 Node* face_search_node_by_id(Face* face, int node_id) {
+	// ------------
+	// CHECK INPUTS
+	// ------------
+
+	if (face == NULL || node_id < 0) return NULL;
+
+
 	Element* element = face->element;
 	for (int i = 0; i < element->element_type->n_nodes; i++) {
 
@@ -58,22 +85,44 @@ Node* face_search_node_by_id(Face* face, int node_id) {
 
 	}
 
+	// If not found return null
+	return NULL;
+
 
 }
 
 
-void face_calc_area(Face* face) {
+int face_calc_area(Face* face) {
+	// ------------
+	// CHECK INPUTS
+	// ------------
+	if (face == NULL) return 1;
+
 	// CHECK THE DIMMENSION OF THE ELEMENTS
 	int dimmension = face->element->element_type->dimmension;
 
 
+	// ------------
 	// 2D ELEMENT 
+	// ------------
 	if (dimmension == 2) {
-		Point point_1 = face_search_node_by_id(face, face->nodes_id[0])->position;
-		Point point_2 = face_search_node_by_id(face, face->nodes_id[1])->position;
-		float dist = point_dist(point_1, point_2);
+		// GET THE POINTS
+		Node* point_1 = face_search_node_by_id(face, face->nodes_id[0]);
+		Node* point_2 = face_search_node_by_id(face, face->nodes_id[1]);
+		// Check for error
+		if (point_1 == NULL || point_2 == NULL) {
+			return 1;
+		}
+
+		// Calculate distances
+		float dist = point_dist(point_1->position, point_2->position);
 		face->area = dist;
+
+		// Indicate success
+		return 0;
 	}
+
+
 	// ----------
 	// 3D ELEMENT 
 	// ----------
@@ -83,10 +132,18 @@ void face_calc_area(Face* face) {
 		/// CREATE AN ARRAY WITH NODE POSITION DATA
 		/// -----------------------------------------
 		float* nodes_position = (float*)malloc(face->element->element_type->node_per_face * 3 * sizeof(float));
+		if (nodes_position == NULL) return 1;
 		float* new_value = nodes_position;
 
+		// Get nodes
 		for (int i = 0; i < face->element->element_type->node_per_face; i++) {
-			Point point_1 = face_search_node_by_id(face, face->nodes_id[i])->position;
+			Node* node_1 = face_search_node_by_id(face, face->nodes_id[i]);
+			if (node_1 == NULL) {
+				free(nodes_position);
+				return 1;
+			}
+
+			Point point_1 = node_1->position;
 			*new_value = point_1.x;
 			new_value++;
 			*new_value = point_1.y;
@@ -94,8 +151,14 @@ void face_calc_area(Face* face) {
 			*new_value = point_1.z;
 			new_value++;
 		}
+
+
 		// SAVE VALUES AS MATRIX
 		Matrix* positions_matrix = matrix_create(nodes_position, 3, face->element->element_type->node_per_face);
+		if (positions_matrix == NULL) {
+			free(nodes_position);
+			return 1;
+		}
 
 		/// -----------------------------------------
 		/// DETERMINE THE TYPE OF ELEMENT FOR VOLUME CALCULATION
@@ -111,7 +174,15 @@ void face_calc_area(Face* face) {
 
 		face->area = calc_area(positions_matrix, type);
 
+		// Free memory and return 0 for all correct
+		free(nodes_position);
+		free(positions_matrix);
+		return 0;
 	}
+
+
+
+	return 1;
 }
 
 
@@ -120,6 +191,12 @@ void face_calc_area(Face* face) {
 
 
 Faces* faces_create_from_element(Element* element) {
+	// ------------
+	// CHECK INPUT
+	// ------------
+	if (element == NULL) return NULL;
+
+
 	/// -----------------
 	/// ALLOCATES MEMORY 
 	/// -----------------
@@ -166,6 +243,13 @@ Faces* faces_create_from_element(Element* element) {
 
 
 Faces* faces_create_from_elements(Elements* elements) {
+	// ------------
+	// CHECK INPUT
+	// ------------
+	if (elements == NULL) return NULL;
+
+
+
 	// ------------------------ 
 	// DETERMINE SIZE OF MEMORY
 	// ------------------------ 
@@ -243,41 +327,65 @@ int compare_descending(const void* a, const void* b)
 
 
 
-Faces* faces_sort(Faces* faces) {
-	
+Face** faces_sort(Faces* faces) {
+	// ------------
+	// CHECK INPUTS
+	// ------------
+	if (faces == NULL || faces->n_faces <= 0) return NULL;
 
-	Faces* sorted_faces = malloc(sizeof(Faces));
+	// ---------------
+	// ALLOCATE MEMORY
+	// ---------------
+	Face** sorted_faces = malloc(faces->n_faces * sizeof(Face*));
 	if (sorted_faces == NULL) return NULL;
 
-	sorted_faces->n_faces = faces->n_faces;
-
-	sorted_faces->face_array =
-		malloc(faces->n_faces * sizeof(Face));
-
-	if (sorted_faces->face_array == NULL) {
-		free(sorted_faces);
-		return NULL;
+	// ---------------
+	// COPY FACES DIRECTIONS
+	// ---------------
+	for (int i = 0; i < faces->n_faces; i++) {
+		sorted_faces[i] = &faces->face_array[i];
+		// Check for error in the faces
+		if (sorted_faces[i] == NULL || sorted_faces[i]->element == NULL) {
+			free(sorted_faces);
+			return NULL;
+		}
 	}
 
-	memcpy(	sorted_faces->face_array,faces->face_array,	faces->n_faces * sizeof(Face));
+	// ---------------
+	// SORT FACES
+	// ---------------
+	qsort(sorted_faces,
+		faces->n_faces,
+		sizeof(Face*),
+		sort_face_pointers);
 
-	// Sort the copy
-	qsort(sorted_faces->face_array, sorted_faces->n_faces, sizeof(Face),sort_descending_faces_nodes);
 
 	return sorted_faces;
+
+
+
 }
 
-int sort_descending_faces_nodes(const void* a, const void* b) {
-	const Face* face_a = (const Face*)a;
-	const Face* face_b = (const Face*)b;
+int sort_face_pointers(const void* a, const void* b) {
 
-	for (int i = 0; i < face_a->element->element_type->node_per_face; i++) {
-		if (face_a->nodes_id_sorted[i] > face_b->nodes_id_sorted[i]) return -1;
-		if (face_a->nodes_id_sorted[i] < face_b->nodes_id_sorted[i]) return  1;
-	}
+    const Face* face_a = *(Face* const*)a;
+    const Face* face_b = *(Face* const*)b;
 
-	return 0;
+    int n_a = face_a->element->element_type->node_per_face;
+    int n_b = face_b->element->element_type->node_per_face;
 
+    // Compare number of nodes
+    if (n_a < n_b) return -1;
+    if (n_a > n_b) return 1;
+
+    // Compare sorted node IDs
+    for (int i = 0; i < n_a; i++) {
+
+        if (face_a->nodes_id_sorted[i] < face_b->nodes_id_sorted[i]) return -1;
+        if (face_a->nodes_id_sorted[i] > face_b->nodes_id_sorted[i]) return 1;
+    }
+
+    return 0;
 }
 
 
@@ -294,11 +402,19 @@ Face* faces_search_id(Faces* faces_struct, int face_id) {
 
 
 
-void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** boundaries_struct) {
+int faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** boundaries_struct) {
+	/// ------------
+	// CHECK INPUTS
+	/// ------------
+	if (faces == NULL || interfaces_struct == NULL || boundaries_struct == NULL) return 1;
+	*interfaces_struct = NULL;
+	*boundaries_struct = NULL;
+
 	/// ------------------------------
 	/// OBTAIN A ORDERED FACECES ARRAY
 	/// ------------------------------
-	Faces* sorted_faces = faces_sort(faces);
+	Face** sorted_faces = faces_sort(faces);
+	if (sorted_faces == NULL) return 1;
 
 
 
@@ -308,11 +424,19 @@ void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** bo
 	// Initial memory reservation that overstates the ammount of memory needed.
 	// Reserve for both "interfaces" & "boundaries"
 
-	*interfaces_struct = malloc(sizeof(Interfaces) + sorted_faces->n_faces * sizeof(Interface));
-	if (*interfaces_struct == NULL) return;
+	*interfaces_struct = malloc(sizeof(Interfaces) + faces->n_faces * sizeof(Interface));
+	if (*interfaces_struct == NULL) {
+		free(sorted_faces);
+		return 1;
+	}
 
-	*boundaries_struct = malloc(sizeof(Boundaries) + sorted_faces->n_faces * sizeof(Boundary));
-	if (*boundaries_struct == NULL) return;
+	*boundaries_struct = malloc(sizeof(Boundaries) + faces->n_faces * sizeof(Boundary));
+	if (*boundaries_struct == NULL) {
+		free(sorted_faces);
+		free(*interfaces_struct);
+		*interfaces_struct = NULL;
+		return 1;
+	}
 
 
 
@@ -335,15 +459,30 @@ void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** bo
 	// ------------------------
 	// DETERMINE THE INTERFACES
 	// ------------------------
-	for (int i = 0; i < sorted_faces->n_faces - 1; i++) {
-		if (faces_equal(&sorted_faces->face_array[i], &sorted_faces->face_array[i + 1])) {
+	Face* face_1 = NULL;
+	Face* face_2 = NULL;
+	for (int i = 0; i < faces->n_faces; i++) {
+		face_1 = sorted_faces[i];
+		int last = (i + 1) == faces->n_faces;
+
+		if (!last  && faces_equal(face_1, sorted_faces[i + 1])) {
+
+			face_2 = sorted_faces[i + 1];
 
 			/// Search for the face in the non-ordered array to conserve correct node order
-			interface_create(sorted_faces->face_array[i].element,
-				sorted_faces->face_array[i + 1].element,
-				&sorted_faces->face_array[i],
+			int interface_reation = interface_create(face_1->element,
+				face_2->element,
+				face_1,
 				new_interface);
+			if (interface_reation == 1) {
+				free(sorted_faces);
+				free(*interfaces_struct);
+				*interfaces_struct = NULL;
 
+				boundaries_destroy(&boundaries_struct);
+
+				return 1;
+			}
 
 			(*interfaces_struct)->n_interfaces++;
 			new_interface++;
@@ -353,17 +492,19 @@ void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** bo
 
 		else {
 			// If faces are not equal then it must be a boundary
-			boundary_create(&sorted_faces->face_array[i], new_boundary);
+			int boundary_reation = boundary_create(face_1, new_boundary);
+			if (boundary_reation == 1) {
+				free(sorted_faces);
+				free(*interfaces_struct);
+				*interfaces_struct = NULL;
+
+				boundaries_destroy(&boundaries_struct);
+				return 1;
+			}
 
 			(*boundaries_struct)->n_boundaries++;
 			new_boundary++;
 
-			if (i == sorted_faces->n_faces - 2) {
-				boundary_create(&sorted_faces->face_array[i + 1], new_boundary);
-
-				(*boundaries_struct)->n_boundaries++;
-				new_boundary++;
-			}
 		}
 	}
 
@@ -377,15 +518,28 @@ void faces_clasify(Faces* faces, Interfaces** interfaces_struct, Boundaries** bo
 	// -----------------
 	// ADJUST THE MEMORY 
 	// -----------------
-	*interfaces_struct = realloc(*interfaces_struct, sizeof(Interfaces) + (*interfaces_struct)->n_interfaces * sizeof(Interface));
-	if (*interfaces_struct == NULL) return;
+	Interfaces* new_interfaces_struct = realloc(*interfaces_struct, sizeof(Interfaces) + (*interfaces_struct)->n_interfaces * sizeof(Interface));
+	if (new_interfaces_struct == NULL) {
+		free(*interfaces_struct);
+		*interfaces_struct = NULL;
 
+		boundaries_destroy(&boundaries_struct);
+		return 1;
+	}
+	*interfaces_struct = new_interfaces_struct;
 	(*interfaces_struct)->interface_array = (Interface*)((*interfaces_struct) + 1);
 
+	Boundaries* new_boundaries_struct = realloc((*boundaries_struct), sizeof(Boundaries) + (*boundaries_struct)->n_boundaries * sizeof(Boundary));
+	if (new_boundaries_struct == NULL) {
+		free(*interfaces_struct);
+		*interfaces_struct = NULL;
 
-	*boundaries_struct = realloc((*boundaries_struct), sizeof(Boundaries) + (*boundaries_struct)->n_boundaries * sizeof(Boundary));
-	if (*boundaries_struct == NULL) return;
-
+		boundaries_destroy(&boundaries_struct);
+		return 1;
+	}
+	*boundaries_struct = new_boundaries_struct;
 	(*boundaries_struct)->boundary_array = (Boundary*)((*boundaries_struct) + 1);
 
+
+	return 0;
 }
