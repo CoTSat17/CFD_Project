@@ -80,7 +80,7 @@ float element_dist(Element* element_1, Element* element_2) {
 
 float element_dist_to_face(Element* element, Face* face) {
 	Point element_center_point; element_center(element, &element_center_point);
-	Point face_center_point =    face_center(face);
+	Point face_center_point;    face_center(face, &face_center_point);
 
 	// Calculate distance
 	float distance = point_dist(element_center_point, face_center_point);
