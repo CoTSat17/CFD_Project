@@ -23,8 +23,8 @@ typedef struct Interface {
 /// <param name="element_2">"Element" struct that has it's normal in the opposite direction</param>
 /// <param name="face">One of the two Face struts that define the same face
 /// <param name="memory_position"> Pointer where the new interface must be stored
-/// <returns></returns>
-void interface_create(Element* element_1, Element* element_2, Face* face, Interface* memory_position);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int interface_create(Element* element_1, Element* element_2, Face* face, Interface* memory_position);
 
 
 /// <summary>
@@ -33,8 +33,8 @@ void interface_create(Element* element_1, Element* element_2, Face* face, Interf
 /// <para>The flux is calculates by "central diferencing"</para>
 /// </summary>
 /// <param name="interface">Interface where the flux will be calculated</param>
-/// <param name="materials">Pointer to "materias_struct" where the fluid materials are stored</param>
-void interface_calculate_flux(Interface* interface, Materials* materials);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int interface_calculate_flux(Interface* interface);
 
 
 /// <summary>
@@ -45,7 +45,8 @@ void interface_calculate_flux(Interface* interface, Materials* materials);
 /// <param name="interface">Interface that will be calculated</param>
 /// <param name="materials_struct">Pointer to "materias_struct" where the fluid materials are stored</param>
 /// <param name="dt">Time delta in each calculation</param>
-void interface_update_element_value(Interface* interface, Materials materials_struct, float dt);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int interface_update_element_value(Interface* interface, Materials* materials_struct, float dt);
 
 
 
@@ -64,12 +65,19 @@ typedef struct Interfaces {
 
 
 /// <summary>
+/// Destroy Interfaces struct and the "interfaces_struct" that form it
+/// </summary>
+/// <param name="interfaces_struct">Interfaces struct to be deleted</param>
+void interfaces_destroy(Interfaces** interfaces_struct);
+
+/// <summary>
 /// Calculates the flux for all the interfaces.
 /// <para>--</para>
 /// <para>The flux is calculates by "central diferencing"</para>
 /// </summary>
 /// <param name="interfaces">Interfaces array to be calculated</param>
-void interfaces_calculate_flux(Interfaces* interfaces);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int interfaces_calculate_flux(Interfaces* interfaces);
 
 
 /// <summary>
@@ -80,4 +88,5 @@ void interfaces_calculate_flux(Interfaces* interfaces);
 /// <param name="interfaces">Interfaces struct that will be calculated</param>
 /// <param name="materials">Pointer to "materias_struct" where the fluid materials are stored</param>
 /// <param name="dt">Time delta in each calculation</param>
-void interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct, float dt);
+/// <returns> 0: OK  ||  1: ERROR </returns>
+int interfaces_update_element_value(Interfaces* interfaces, Materials* materials_struct, float dt);

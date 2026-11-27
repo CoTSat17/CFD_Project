@@ -44,6 +44,11 @@ TEST(Face_Test, Faces_Create_From_Element) {
 	EXPECT_EQ(faces->face_array[2].nodes_id[0], 3);
 	EXPECT_EQ(faces->face_array[2].nodes_id[1], 1);
 
+	// Check areas
+	EXPECT_EQ(faces->face_array[0].area, 1.0);
+	EXPECT_NEAR(faces->face_array[1].area, 1.41421, 0.0001);
+	EXPECT_EQ(faces->face_array[2].area, 1.0);
+
 }
 
 
@@ -117,6 +122,15 @@ TEST(Face_Test, Faces_Create_From_Elements) {
 	EXPECT_EQ(faces->face_array[0].face_id, 1);
 	EXPECT_EQ(faces->face_array[1].face_id, 2);
 	EXPECT_EQ(faces->face_array[2].face_id, 3);
+
+	// Check areas
+	EXPECT_EQ(faces->face_array[0].area, 1.0);
+	EXPECT_NEAR(faces->face_array[1].area, 1.41421, 0.0001);
+	EXPECT_EQ(faces->face_array[2].area, 1.0);
+	EXPECT_NEAR(faces->face_array[3].area, 1.41421, 0.0001);
+	EXPECT_EQ(faces->face_array[4].area, 1.0);
+	EXPECT_EQ(faces->face_array[5].area, 1.0);
+
 
 }
 

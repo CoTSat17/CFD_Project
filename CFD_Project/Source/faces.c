@@ -234,6 +234,14 @@ Faces* faces_create_from_element(Element* element) {
 		// Create the Face struct for this face
 		faces->face_array[i] = (Face){ .nodes_id = nodes, .element = element, .face_id=i+1 };
 
+		// Calculate Face area
+		int calc_area_response = face_calc_area(&faces->face_array[i]);
+		// If it fails destroy boundary and return error
+		if (calc_area_response == 1) {
+			free(faces);
+			return NULL;
+		}
+
 	}
 
 	return faces;
@@ -299,6 +307,14 @@ Faces* faces_create_from_elements(Elements* elements) {
 
 			// Sort the ID values of the nodes from smalles to biggest
 			qsort(new_face->nodes_id_sorted, element->element_type->node_per_face, sizeof(int), compare_descending);
+
+			// Calculate Face area
+			int calc_area_response = face_calc_area(new_face);
+			// If it fails destroy boundary and return error
+			if (calc_area_response == 1) {
+				free(faces);
+				return NULL;
+			}
 
 			// Move the memory position where the next "Face" struct must be stored
 			new_face++;
